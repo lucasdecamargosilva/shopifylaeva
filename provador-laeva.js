@@ -72,6 +72,33 @@
     const WEBHOOK_LIMITE = 'https://n8n.segredosdodrop.com/webhook/limite-provas';
     const DAILY_LIMIT = 99999; // Limite desativado pra Laeva
 
+    // ── Tracking de abertura do provador (mesmo sem provar) ──
+    const WEBHOOK_OPEN = 'https://n8n.segredosdodrop.com/webhook/pl-provador-open';
+    function plSid() {
+        try {
+            var s = localStorage.getItem('pl_sid');
+            if (!s) { s = 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10); localStorage.setItem('pl_sid', s); }
+            return s;
+        } catch (e) { return 'nostore'; }
+    }
+    function plProdName() {
+        return (document.querySelector('h1.product-name, h1.product__title, .product-single__title, h1') || {}).innerText || document.title || '';
+    }
+    function plTrackOpen() {
+        try {
+            fetch(WEBHOOK_OPEN, { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ session_id: plSid(), origin: location.origin, produto: plProdName() }) }).catch(function () {});
+        } catch (e) {}
+    }
+    function plTrackProved(rawPhone) {
+        try {
+            var d = (rawPhone || '').replace(/\D/g, '');
+            if (d.length > 11 && d.slice(0, 2) === '55') d = d.slice(2);
+            fetch(WEBHOOK_OPEN, { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ session_id: plSid(), proved: true, telefone_cliente: d || null }) }).catch(function () {});
+        } catch (e) {}
+    }
+
     LOG.info('Script carregado — Provador Virtual Laeva (Tray)');
 
     // ─── TABELAS DE TAMANHOS ──────────────────────────────────────────────────────
@@ -831,6 +858,7 @@
             LOG.info('Botão clicado — produto: "' + prodName + '"');
             applyProduct(detectProduct(prodName));
             openModal();
+            plTrackOpen();
         };
 
         closeBtn.onclick = () => { LOG.info('Botão fechar clicado'); closeModal(); };
@@ -1209,6 +1237,7 @@ const fd = new FormData();
                     if (res.ok) {
                         // Incrementa contador de uso diário
                         localStorage.setItem(storageKey, String(usedToday + 1));
+                        plTrackProved(phoneInput.value); // marca essa sessão como "provou"
 
                         const blob = await res.blob();
                         LOG.ok('Imagem gerada com sucesso! (' + (blob.size / 1024).toFixed(0) + 'KB, ' + blob.type + ')');

@@ -750,9 +750,9 @@
         openBtn.innerHTML = stampImageHTML;
 
         const shopifyImgContainers = [
-            '.product-information__media', '.product__media-wrapper', '.product-gallery__media',
-            '.product__media', '.product-media-container', '[data-media-id]',
-            '.product__media-item', '.product-gallery', '.media-gallery'
+            '.product-media-container', '.product-gallery__media', '.product__media-item',
+            '[data-media-id]', '.product__media', '.product__media-wrapper',
+            '.product-gallery', '.media-gallery'
         ];
 
         let placed = false;
@@ -761,29 +761,18 @@
             if (el) {
                 const isMobile = window.innerWidth < 768;
                 const btnSize = isMobile ? '80px' : '70px';
-                document.body.appendChild(openBtn);
-                openBtn.style.position = 'fixed';
+                const elPosition = window.getComputedStyle(el).position;
+                if (elPosition === 'static') el.style.position = 'relative';
+                el.appendChild(openBtn);
+                openBtn.style.position = 'absolute';
                 openBtn.style.zIndex = '50';
                 openBtn.style.width = btnSize;
                 openBtn.style.height = btnSize;
-
-                function positionBtn() {
-                    const rect = el.getBoundingClientRect();
-                    const btnTop = rect.top + (isMobile ? 70 : 40);
-                    const threshold = isMobile ? 80 : 0;
-                    if (btnTop < threshold || rect.bottom < 0) {
-                        openBtn.style.visibility = 'hidden';
-                    } else {
-                        openBtn.style.visibility = 'visible';
-                        openBtn.style.top = btnTop + 'px';
-                        openBtn.style.left = (rect.right - (isMobile ? 116 : 106)) + 'px';
-                    }
-                }
-                positionBtn();
-                window.addEventListener('scroll', positionBtn);
-                window.addEventListener('resize', positionBtn);
+                openBtn.style.top = isMobile ? '16px' : '24px';
+                openBtn.style.right = isMobile ? '16px' : '24px';
+                openBtn.style.left = 'auto';
                 placed = true;
-                LOG.ok('Botão posicionado (' + (isMobile ? 'mobile' : 'desktop') + ') sobre: "' + sel + '"');
+                LOG.ok('Botão ancorado (' + (isMobile ? 'mobile' : 'desktop') + ') na foto: "' + sel + '"');
                 break;
             }
         }
@@ -940,7 +929,12 @@
         }
 
 
-        openBtn.onclick = () => {
+        openBtn.onclick = (e) => {
+
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
 
             const prodName = document.querySelector('h1.product-name, h1.product__title, .product-single__title, h1')?.innerText || document.title;
             LOG.info('Botão clicado — produto: "' + prodName + '"');

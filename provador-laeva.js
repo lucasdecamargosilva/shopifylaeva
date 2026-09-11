@@ -61,7 +61,7 @@
     };
 
     // ===============================================
-    // 0. CHUMBAR A API KEY AQUI DIRETO NO CÓDIGO
+    // 0. CHAVE DA LOJA LAEVA
     // ===============================================
     const apiKey = "pl_live_ff6ad024abba3c48860f831a93a16b924b91aee1187b07476efa7b11b14d9c4f";
     window.PROVOU_LEVOU_API_KEY = apiKey;
@@ -70,7 +70,7 @@
     const LOGO_URL = 'https://images.tcdn.com.br/img/img_prod/1401014/1748467573_logo.png';
 
     const WEBHOOK_LIMITE = 'https://n8n.segredosdodrop.com/webhook/limite-provas';
-    const DAILY_LIMIT = 99999; // Limite desativado pra Laeva
+    const DAILY_LIMIT = 99999; // Limite desativado para a Laeva
 
     // ── Tracking de abertura do provador (mesmo sem provar) ──
     const WEBHOOK_OPEN = 'https://n8n.segredosdodrop.com/webhook/pl-provador-open';
@@ -99,7 +99,7 @@
         } catch (e) {}
     }
 
-    LOG.info('Script carregado — Provador Virtual Laeva (Tray)');
+    LOG.info('Script carregado — Provador Virtual Laeva (Shopify)');
 
     // ─── TABELAS DE TAMANHOS ──────────────────────────────────────────────────────
 
@@ -139,10 +139,9 @@
     // ─── TABELA DE MEDIDAS LAEVA (CALÇAS) ─────────────────────────────
     // Cada entrada: { label, cintura: [min, max], quadril: [min, max] }
     const LAEVA_CALCA_SIZES = [
-        { label: 'P (38/40)', cintura: [68, 82], quadril: [95, 104] },
-        { label: 'M (42)', cintura: [83, 94], quadril: [105, 116] },
-        { label: 'G (44/46)', cintura: [95, 106], quadril: [117, 122] },
-        { label: 'GG (46/48)', cintura: [107, 114], quadril: [122, 125] },
+        { label: 'P', cintura: [68, 82], quadril: [95, 104] },
+        { label: 'M', cintura: [83, 94], quadril: [105, 116] },
+        { label: 'G', cintura: [95, 114], quadril: [117, 130] },
     ];
 
     function calcLaevaCalca(cintura, quadril) {
@@ -161,10 +160,9 @@
 
     // ─── TABELA DE MEDIDAS LAEVA (BLUSAS / BODY) ────────────────────
     const LAEVA_BLUSA_SIZES = [
-        { label: 'P (38/40)', cintura: [68, 78], busto: [86, 92], quadril: [99, 106] },
-        { label: 'M (42)', cintura: [79, 87], busto: [93, 107], quadril: [107, 114] },
-        { label: 'G (44/46)', cintura: [88, 96], busto: [108, 118], quadril: [115, 122] },
-        { label: 'GG (46/48)', cintura: [97, 108], busto: [119, 125], quadril: [123, 130] },
+        { label: 'P', cintura: [68, 78], busto: [86, 92], quadril: [99, 106] },
+        { label: 'M', cintura: [79, 87], busto: [93, 107], quadril: [107, 114] },
+        { label: 'G', cintura: [88, 108], busto: [108, 130], quadril: [115, 135] },
     ];
 
     function calcLaevaBlusa(altura, peso) {
@@ -195,7 +193,7 @@
         LOG.group('Detecção de produto');
         LOG.info('Nome: "' + name + '" → "' + n + '"');
 
-        // Pega categoria da Tray via dataLayer (ex: "Jaqueta", "Calça", "Blusas")
+        // Usa o tipo do produto publicado pela Shopify quando estiver disponível.
         let cat = '';
         try {
             if (window.dataLayer) {
@@ -207,15 +205,19 @@
                 }
             }
         } catch (e) { }
-        LOG.info('Categoria Tray: "' + (cat || '(não encontrada)') + '"');
+        try {
+            const productJson = document.querySelector('script[type="application/json"][data-product-json]');
+            if (productJson) cat = norm((JSON.parse(productJson.textContent || '{}') || {}).type || cat);
+        } catch (e) { }
+        LOG.info('Categoria Shopify: "' + (cat || '(não encontrada)') + '"');
 
         // Concatena categoria + nome para busca
         const txt = cat + ' ' + n;
         LOG.info('Texto para match: "' + txt + '"');
 
         let result;
-        // Calça, Legging, Bermuda, Short → cintura e quadril
-        if (/\bcalca|legging|flare|skinny|pantalona|wide.?leg|jogger|bermuda|shorts?\b/.test(txt)) {
+        // Legging, calça, short e ciclista usam cintura e quadril.
+        if (/\bcalca|legging|flare|skinny|pantalona|wide.?leg|jogger|bermuda|shorts?|ciclista\b/.test(txt)) {
             result = { category: 'bottom', fit: 'mariana_calca' };
         }
         // Tudo que não é calça → peso e altura (Jaqueta, Blusas, Body, Vestidos, Macações, etc.)
@@ -613,7 +615,7 @@
                             </div>
                         </div>
                         <div id="mc-terms-row" style="display:block;margin:14px 0 0;font-size:13px;color:#444;text-align:center;line-height:1.6;cursor:pointer;opacity:0.6;user-select:none;">
-                            <span id="mc-terms-icon" style="font-size:18px;vertical-align:middle;margin-right:6px;">&#9744;</span><span>Concordo com os <a href="http://provoulevou.com.br/termos.html" target="_blank" onclick="event.stopPropagation()" style="color:var(--mc-gold);text-decoration:underline;">Termos e Condi&#231;&#245;es</a></span>
+                            <span id="mc-terms-icon" style="font-size:18px;vertical-align:middle;margin-right:6px;">&#9744;</span><span>Concordo com os <a href="https://provoulevou.com.br/termos.html" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="color:var(--mc-gold);text-decoration:underline;">Termos e Condi&#231;&#245;es</a></span>
                         </div>
                         <div id="mc-validation-hint" class="mc-validation-hint"></div>
                         <button class="mc-btn-black" id="mc-btn-generate" style="margin-bottom:24px;">Ver no meu corpo</button>
@@ -726,15 +728,14 @@
         openBtn.setAttribute('aria-label', 'Abrir Provador Virtual');
         openBtn.innerHTML = stampImageHTML;
 
-        const trayImgContainers = ['.image-show', '.box-gallery', '.product-colum-left', '.product-gallery', '.product-images-slide'];
-        const fallbackContainers = [
-            '.product__media-wrapper', '.product-gallery__media', '.product__media',
-            '.product-image-main', '.product-media-container', '[data-media-id]',
-            '.product__media-item', '.product-gallery', '.product-single__media', '.media-gallery'
+        const shopifyImgContainers = [
+            '.product-information__media', '.product__media-wrapper', '.product-gallery__media',
+            '.product__media', '.product-media-container', '[data-media-id]',
+            '.product__media-item', '.product-gallery', '.media-gallery'
         ];
 
         let placed = false;
-        for (const sel of [...trayImgContainers, ...fallbackContainers]) {
+        for (const sel of shopifyImgContainers) {
             const el = document.querySelector(sel);
             if (el) {
                 const isMobile = window.innerWidth < 768;
@@ -774,7 +775,9 @@
         // Botão inline acima do Comprar
         (function injectInlineBtn() {
             if (document.querySelector('.laeva-inline-trigger')) return;
-            const target = document.querySelector('.tray-buy-button') || document.querySelector('.actions');
+            const target = document.querySelector('form[action*="/cart/add"] .product-form-buttons') ||
+                document.querySelector('product-form-component .product-form-buttons') ||
+                document.querySelector('form[action*="/cart/add"]');
             if (!target) return;
             const inline = document.createElement('button');
             inline.type = 'button';
@@ -1046,7 +1049,7 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             telefone: phoneNorm,
-                            origin: 'usemarianacardoso.com.br'
+                            origin: window.location.hostname
                         })
                     });
                     if (dbRes.ok) {
@@ -1124,15 +1127,11 @@
                 }
 
                 const prodImgTag = document.querySelector(
-                    '.image-show .box-img.active .zoom img, ' +
-                    '.image-show .box-img .zoom img, ' +
-                    '.image-show img, ' +
-                    '.product-gallery .images img, ' +
-                    '.product-images-slide .swiper-slide-active .swiper-zoom-container img, ' +
-                    '.product-images-slide .swiper-zoom-container img, ' +
+                    '[data-media-id]:not([hidden]) img, ' +
+                    '.product-information__media img, ' +
                     '.product__media img, ' +
-                    'img.product-featured-media, ' +
-                    '.product-single__photo'
+                    '.product-gallery img, ' +
+                    'img[data-product-media]'
                 );
                 const prodImg = prodImgTag
                     ? (prodImgTag.dataset.src || prodImgTag.dataset.lazy || prodImgTag.src)
@@ -1314,10 +1313,8 @@ const fd = new FormData();
             var section = document.getElementById('mc-related-products');
             if (!grid || !section) return;
 
-            // Seletores Tray Laeva
-            var items = document.querySelectorAll('.product-related .item.swiper-slide');
-            if (!items.length) items = document.querySelectorAll('.product-related .product');
-            if (!items.length) items = document.querySelectorAll('.list-product .swiper-slide .product');
+            // Produtos relacionados do tema Shopify Atelier.
+            var items = document.querySelectorAll('product-card, .product-card, [data-product-card]');
             if (!items.length) {
                 LOG.warn('Nenhum produto relacionado encontrado');
                 return;
@@ -1328,10 +1325,10 @@ const fd = new FormData();
                 if (products.length >= 3) return;
                 try {
                     var imgEl = item.querySelector('img[data-src], img[src]');
-                    var nameEl = item.querySelector('.product-name');
-                    var priceOff = item.querySelector('.price-off');
-                    var priceLine = item.querySelector('.line-price');
-                    var linkEl = item.querySelector('a.info-product, a[href*="/"]');
+                    var nameEl = item.querySelector('.product-card__title, [data-product-title], h3, h4');
+                    var priceOff = item.querySelector('.price, [data-product-price]');
+                    var priceLine = item.querySelector('.price-item');
+                    var linkEl = item.querySelector('a[href*="/products/"]');
 
                     var img = imgEl ? (imgEl.getAttribute('data-src') || imgEl.src) : '';
                     var name = nameEl ? nameEl.textContent.trim() : (imgEl && imgEl.alt ? imgEl.alt.trim() : '');
@@ -1383,14 +1380,9 @@ const fd = new FormData();
     // os elementos existam no DOM (script pode ser carregado async)
     function runWhenReady() {
         const path = window.location.pathname;
-        const isProductPage =
-            window.__MC_FORCE_INIT__ === true ||
-            path.includes('/produto/') ||
-            path.includes('/p/') ||
-            path.includes('/products/') ||
-            document.getElementById('product-container') !== null ||
-            document.getElementById('form_comprar') !== null ||
-            document.querySelector('.box-gallery') !== null;
+        const hasProductMeta = !!document.querySelector('meta[property="og:type"][content="product"]');
+        const isProductPage = window.__MC_FORCE_INIT__ === true ||
+            (hasProductMeta && /^\/products\/[^/]+\/?$/.test(path));
 
         LOG.info('Página atual: "' + path + '"  →  é página de produto: ' + isProductPage);
 

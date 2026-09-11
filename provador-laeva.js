@@ -674,9 +674,11 @@
                             -->
 
                             <div id="mc-provas-restantes-result" class="mc-provas-msg" style="text-align:center;margin-bottom:8px;"></div>
-                            <button class="mc-btn-outline" id="mc-btn-back">Voltar ao Produto</button>
-                            <button class="mc-btn-black mc-res-mobile-only" id="mc-retry-btn" style="display:flex !important;align-items:center;justify-content:center;gap:8px;">
-                                <i class="ph ph-camera"></i> Tentar outra foto
+                            <button class="mc-btn-black" id="mc-btn-buy-result" style="display:flex;align-items:center;justify-content:center;gap:8px;">
+                                <i class="ph ph-shopping-bag"></i> Comprar agora
+                            </button>
+                            <button class="mc-btn-outline mc-res-mobile-only" id="mc-retry-btn" style="display:flex !important;align-items:center;justify-content:center;gap:8px;">
+                                <i class="ph ph-camera"></i> Provar outra foto
                             </button>
                             <div id="mc-related-products" style="display:none;">
                                 <h4>Veja tamb&eacute;m</h4>
@@ -825,7 +827,7 @@
         const uploadStep = document.getElementById('mc-step-upload');
 
         const closeBtn = document.getElementById('mc-close-btn');
-        const backBtn = document.getElementById('mc-btn-back');
+        const buyResultBtn = document.getElementById('mc-btn-buy-result');
         const retryBtn = document.getElementById('mc-retry-btn');
         const realInput = document.getElementById('mc-real-input');
         const triggerUpload = document.getElementById('mc-trigger-upload');
@@ -852,7 +854,7 @@
         let productJsonPromise = null;
 
         function selectedVariantId() {
-            const inputs = Array.from(document.querySelectorAll('form[action*="/cart/add"] [name="id"], [name="id"]'));
+            const inputs = Array.from(document.querySelectorAll('.product-information form[action*="/cart/add"] [name="id"], product-form-component form[action*="/cart/add"] [name="id"], form[action*="/cart/add"] [name="id"], [name="id"]'));
             const selected = inputs.find(el => !el.closest('.payment-terms') && (el.checked || el.tagName === 'SELECT' || el.type === 'hidden'));
             if (selected && selected.value) return String(selected.value);
             try { return new URLSearchParams(window.location.search).get('variant') || ''; } catch (_) { return ''; }
@@ -949,7 +951,32 @@
         };
 
         closeBtn.onclick = () => { LOG.info('Botão fechar clicado'); closeModal(); };
-        backBtn.onclick = () => { LOG.info('Botão "Voltar ao produto" clicado'); closeModal(); };
+
+        buyResultBtn.onclick = async () => {
+            const variantId = selectedVariantId();
+            if (!variantId) {
+                LOG.warn('Não foi possível identificar a variante para compra.');
+                window.location.href = '/cart';
+                return;
+            }
+            const originalHtml = buyResultBtn.innerHTML;
+            buyResultBtn.disabled = true;
+            buyResultBtn.innerHTML = '<i class="ph ph-circle-notch"></i> Adicionando...';
+            try {
+                const response = await fetch('/cart/add.js', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ items: [{ id: Number(variantId), quantity: 1 }] })
+                });
+                if (!response.ok) throw new Error('Falha ao adicionar ao carrinho: ' + response.status);
+                window.location.href = '/cart';
+            } catch (e) {
+                LOG.error(e.message);
+                buyResultBtn.disabled = false;
+                buyResultBtn.innerHTML = originalHtml;
+                window.showErrorPopup();
+            }
+        };
 
         modal.addEventListener('click', (e) => {
             if (e.target === modal) { LOG.info('Clique fora do card — fechando modal'); closeModal(); }

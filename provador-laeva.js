@@ -368,13 +368,13 @@
         #mc-modal-ia {
             display: none; position: fixed; inset: 0;
             background: rgba(240,238,235,0.96);
-            z-index: 999999; align-items: center; justify-content: center;
+            z-index: 2147483646; align-items: center; justify-content: center;
             font-family: var(--font-body);
         }
         .mc-card-ia {
             background: var(--mc-bg); width: 100%; max-width: 480px;
             padding: 0; position: relative; color: var(--mc-text);
-            border: none; max-height: 94vh;
+            border: none; border-radius: 20px; max-height: 94vh;
             display: flex; flex-direction: column; overflow: hidden;
             box-shadow: 0 32px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.06);
             animation: mc-modal-in 0.35s cubic-bezier(0.22,1,0.36,1);
@@ -405,7 +405,7 @@
             font-size: 16px !important; font-family: var(--font-body) !important;
             background: var(--mc-gray) !important; color: var(--mc-text) !important;
             outline: none !important; box-sizing: border-box !important;
-            border-radius: 0 !important; -webkit-appearance: none !important; appearance: none !important;
+            border-radius: 14px !important; -webkit-appearance: none !important; appearance: none !important;
             margin: 0 !important; text-align: center !important;
         }
         .mc-lead-form .mc-input:focus { border-bottom-color: var(--mc-gold) !important; background: #fff !important; }
@@ -479,7 +479,7 @@
 
         .mc-btn-black {
             background: var(--mc-text); color: var(--mc-bg);
-            border: none; width: 100%; padding: 16px;
+            border: none; border-radius: 14px; width: 100%; padding: 16px;
             font-family: var(--font-display); font-size: 18px; font-weight: 400;
             letter-spacing: 3px; text-transform: uppercase; cursor: pointer; margin-top: 4px; transition: 0.3s; box-sizing: border-box;
         }
@@ -487,7 +487,7 @@
         .mc-btn-black:not(:disabled):hover { opacity: 0.82; }
         .mc-btn-buy { background: var(--mc-text); color: var(--mc-bg); border: none; width: 100%; padding: 18px; font-family: var(--font-display); font-size: 18px; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; margin-bottom: 12px; transition: 0.3s; }
         .mc-btn-buy:hover { opacity: 0.82; }
-        .mc-btn-outline { background: var(--mc-bg); color: var(--mc-text); border: 1.5px solid #e8e8e8; width: 100%; padding: 16px; font-family: var(--font-display); font-size: 18px; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-sizing: border-box; }
+        .mc-btn-outline { background: var(--mc-bg); color: var(--mc-text); border: 1.5px solid #e8e8e8; border-radius: 14px; width: 100%; padding: 16px; font-family: var(--font-display); font-size: 18px; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-sizing: border-box; }
         .mc-btn-outline:hover { border-color: var(--mc-text); }
 
         .mc-powered-footer { background: var(--mc-gray); padding: 10px 20px; display: flex; align-items: center; justify-content: center; gap: 7px; flex-shrink: 0; border-top: 1px solid var(--mc-gold); text-decoration: none; }
@@ -512,6 +512,10 @@
         #mc-result-img-col { width: 100%; max-height: 65vh; background: var(--mc-gray); overflow: hidden; display: flex; align-items: center; justify-content: center; border: none !important; margin: 0 !important; }
         #mc-result-img-col img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
         #mc-result-actions-col { display: flex; flex-direction: column; gap: 12px; padding: 20px 28px 0; }
+        .mc-result-product { text-align: left; padding: 18px; margin-bottom: 2px; background: var(--mc-gray); border: 1px solid #e8e8e8; border-radius: 16px; }
+        .mc-result-product-name { font-family: var(--font-body); font-size: 17px; line-height: 1.3; font-weight: 600; color: var(--mc-text); margin-bottom: 8px; }
+        .mc-result-product-price { font-family: var(--font-display); font-size: 30px; line-height: 1; letter-spacing: 1px; color: var(--mc-text); }
+        .mc-result-product-installments { font-family: var(--font-body); font-size: 12px; line-height: 1.4; color: var(--mc-text-light); margin-top: 7px; }
         #mc-size-recommendation { text-align: center; padding: 14px 16px; border: 1px solid #000; background: #f5f5f5; }
         #mc-size-recommendation p:first-child { margin: 0 0 4px; font-size: 9px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--mc-text-light); }
         #mc-rec-size-label { margin: 0; font-family: var(--font-display); font-size: 22px; letter-spacing: 3px; color: var(--mc-text); }
@@ -538,6 +542,16 @@
             .mc-card-ia.is-result #mc-result-actions-col { width: 56% !important; padding: 28px 24px !important; gap: 12px; overflow-y: auto; }
             .mc-card-ia.is-result .mc-res-mobile-only { display: flex !important; align-items: center; justify-content: center; gap: 8px; }
             .mc-card-ia.is-result .mc-close-ia { top: 12px; right: 12px; z-index: 10; }
+        }
+        @media (max-width: 767px) {
+            #mc-modal-ia { padding: 10px; }
+            .mc-card-ia { max-height: calc(100vh - 20px); border-radius: 18px; }
+            .mc-card-ia.is-result #mc-header-provador { display: none !important; }
+            .mc-card-ia.is-result #mc-result-img-col { max-height: 42vh; border-radius: 0; }
+            .mc-card-ia.is-result #mc-result-actions-col { padding: 16px 20px 20px; gap: 10px; }
+            .mc-card-ia.is-result .mc-result-product { padding: 14px 16px; }
+            .mc-card-ia.is-result .mc-result-product-name { font-size: 15px; margin-bottom: 6px; }
+            .mc-card-ia.is-result .mc-result-product-price { font-size: 27px; }
         }
         #mc-step-error { display: none; flex-direction: column; gap: 24px; align-items: center; text-align: center; padding: 52px 28px; }
         #mc-step-error h2 { font-family: var(--font-display); font-size: 22px; letter-spacing: 3px; text-transform: uppercase; margin: 0; font-weight: 400; }
@@ -646,6 +660,11 @@
                             <img id="mc-final-view-img">
                         </div>
                         <div id="mc-result-actions-col">
+                            <div class="mc-result-product" id="mc-result-product" style="display:none;">
+                                <div class="mc-result-product-name" id="mc-result-product-name"></div>
+                                <div class="mc-result-product-price" id="mc-result-product-price"></div>
+                                <div class="mc-result-product-installments" id="mc-result-product-installments"></div>
+                            </div>
                             <!-- RECOMENDAÇÃO DE TAMANHO DESATIVADA TEMPORARIAMENTE
                             <div id="mc-size-recommendation" style="display:none;">
                                 <p>Tamanho Recomendado</p>
@@ -656,7 +675,7 @@
 
                             <div id="mc-provas-restantes-result" class="mc-provas-msg" style="text-align:center;margin-bottom:8px;"></div>
                             <button class="mc-btn-outline" id="mc-btn-back">Voltar ao Produto</button>
-                            <button class="mc-btn-black mc-res-mobile-only" id="mc-retry-btn" style="display:flex;align-items:center;justify-content:center;gap:8px;">
+                            <button class="mc-btn-black mc-res-mobile-only" id="mc-retry-btn" style="display:flex !important;align-items:center;justify-content:center;gap:8px;">
                                 <i class="ph ph-camera"></i> Tentar outra foto
                             </button>
                             <div id="mc-related-products" style="display:none;">
@@ -830,10 +849,74 @@
         phoneInput.addEventListener('blur', _savePhoneIfValid);
 
         let userPhoto = null;
+        let productJsonPromise = null;
+
+        function selectedVariantId() {
+            const inputs = Array.from(document.querySelectorAll('form[action*="/cart/add"] [name="id"], [name="id"]'));
+            const selected = inputs.find(el => !el.closest('.payment-terms') && (el.checked || el.tagName === 'SELECT' || el.type === 'hidden'));
+            if (selected && selected.value) return String(selected.value);
+            try { return new URLSearchParams(window.location.search).get('variant') || ''; } catch (_) { return ''; }
+        }
+
+        function moneyBRL(cents) {
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(cents || 0) / 100);
+        }
+
+        function installmentTextFromPage() {
+            const candidates = document.querySelectorAll('.precoParcela, .textoContSemValor, [class*="installment"], [class*="parcel"]');
+            for (const el of candidates) {
+                if (el.closest('#mc-modal-ia')) continue;
+                const text = (el.textContent || '').replace(/\s+/g, ' ').trim();
+                const match = text.match(/(?:em\s+at[eé]\s+)?\d+x\s+de\s+R\$\s*[\d.,]+(?:\s+sem\s+juros)?/i);
+                if (match) return match[0];
+            }
+            return '';
+        }
+
+        async function populateResultProduct() {
+            const box = document.getElementById('mc-result-product');
+            const nameEl = document.getElementById('mc-result-product-name');
+            const priceEl = document.getElementById('mc-result-product-price');
+            const installmentsEl = document.getElementById('mc-result-product-installments');
+            if (!box || !nameEl || !priceEl || !installmentsEl) return;
+
+            const name = (document.querySelector('h1.product-name, h1.product__title, .product-single__title, h1')?.innerText || document.title || '').trim();
+            let priceCents = 0;
+            try {
+                if (!productJsonPromise) {
+                    productJsonPromise = fetch(window.location.pathname + '.js', { credentials: 'same-origin' }).then(r => {
+                        if (!r.ok) throw new Error('Produto Shopify indisponível');
+                        return r.json();
+                    });
+                }
+                const product = await productJsonPromise;
+                const variantId = selectedVariantId();
+                const variant = (product.variants || []).find(v => String(v.id) === variantId) || (product.variants || [])[0];
+                priceCents = Number(variant?.price || product.price || 0);
+            } catch (e) {
+                LOG.warn('Preço via Shopify indisponível: ' + e.message);
+            }
+
+            let price = priceCents ? moneyBRL(priceCents) : '';
+            if (!price) {
+                const priceNode = document.querySelector('product-price .price, .price-item--sale, .price__sale .price-item, .price-item--regular, .product__price .price, span.price');
+                price = (priceNode?.textContent || '').replace(/\s+/g, ' ').trim();
+            }
+
+            let installments = installmentTextFromPage();
+            if (!installments && priceCents) installments = 'ou 3x de ' + moneyBRL(Math.round(priceCents / 3));
+
+            nameEl.textContent = name;
+            priceEl.textContent = price;
+            installmentsEl.textContent = installments;
+            installmentsEl.style.display = installments ? 'block' : 'none';
+            box.style.display = (name || price) ? 'block' : 'none';
+        }
 
         function openModal() {
 
             LOG.info('Modal aberto');
+            populateResultProduct();
             modal.style.display = 'flex';
             lockBodyScroll();
         }
@@ -860,6 +943,7 @@
             const prodName = document.querySelector('h1.product-name, h1.product__title, .product-single__title, h1')?.innerText || document.title;
             LOG.info('Botão clicado — produto: "' + prodName + '"');
             applyProduct(detectProduct(prodName));
+            populateResultProduct();
             openModal();
             plTrackOpen();
         };
@@ -1256,6 +1340,7 @@ const fd = new FormData();
                             recBox.style.display = 'none';
                         }
 
+                        await populateResultProduct();
                         document.querySelector('.mc-card-ia').classList.add('is-result');
                         document.getElementById('mc-step-result').style.display = 'flex';
                         if (typeof _mcCheckProvasRestantes === 'function') _mcCheckProvasRestantes();

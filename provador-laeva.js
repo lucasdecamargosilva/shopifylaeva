@@ -490,9 +490,9 @@
         .mc-btn-outline { background: var(--mc-bg); color: var(--mc-text); border: 1.5px solid #e8e8e8; width: 100%; padding: 16px; font-family: var(--font-display); font-size: 18px; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-sizing: border-box; }
         .mc-btn-outline:hover { border-color: var(--mc-text); }
 
-        .mc-powered-footer { background: var(--mc-gray); padding: 14px 20px; display: flex; align-items: center; justify-content: center; gap: 9px; flex-shrink: 0; border-top: 1px solid var(--mc-gold); text-decoration: none; }
-        .mc-powered-footer span { font-size: 9.5px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--mc-text-light); }
-        .mc-quantic-logo { height: 22px; opacity: 0.7; }
+        .mc-powered-footer { background: var(--mc-gray); padding: 10px 20px; display: flex; align-items: center; justify-content: center; gap: 7px; flex-shrink: 0; border-top: 1px solid var(--mc-gold); text-decoration: none; }
+        .mc-powered-footer span { font-size: 8px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--mc-text-light); }
+        .mc-quantic-logo { height: 14px; width: auto; opacity: 0.7; }
 
         @keyframes mc-slide { from{transform:translateX(-100%)} to{transform:translateX(100%)} }
         @keyframes mc-pulse-text { 0%,100%{opacity:0.4} 50%{opacity:1} }
@@ -633,7 +633,7 @@
                             <div class="mc-loading-t1" style="position:absolute;width:100%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:18px;letter-spacing:4px;text-transform:uppercase;color:var(--mc-text);animation:mc-alt-show 3.6s ease-in-out infinite;">Gerando Prova Virtual</div>
                             <a href="https://provoulevou.com.br?utm_source=widget&utm_medium=lojista&utm_campaign=laeva" target="_blank" class="mc-loading-t2" style="position:absolute;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;opacity:0;animation:mc-alt-hide 3.6s ease-in-out infinite;">
                                 <span style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--mc-text-light);font-family:var(--font-body);">Powered by</span>
-                                <img src="https://i.ibb.co/MD3B4FQf/Logo-provou-preto-1.png" alt="Provou Levou" style="height:16px;width:auto;opacity:0.8;">
+                                <img src="https://i.ibb.co/MD3B4FQf/Logo-provou-preto-1.png" alt="Provou Levou" style="height:13px;width:auto;opacity:0.8;">
                             </a>
                         </div>
                         <div style="height:1px;background:#e8e8e8;width:100%;position:relative;overflow:hidden;">
@@ -755,7 +755,7 @@
                     } else {
                         openBtn.style.visibility = 'visible';
                         openBtn.style.top = btnTop + 'px';
-                        openBtn.style.left = (rect.right - (isMobile ? 100 : 90)) + 'px';
+                        openBtn.style.left = (rect.right - (isMobile ? 116 : 106)) + 'px';
                     }
                 }
                 positionBtn();

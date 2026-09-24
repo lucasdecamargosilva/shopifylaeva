@@ -474,7 +474,7 @@
         #mc-trigger-upload i { font-size: 32px; color: var(--mc-gold); margin-bottom: 8px; }
         #mc-trigger-upload span { font-size: 9px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
         #mc-pre-view { width: 120px; height: 160px; overflow: hidden; border: 1px solid #e8e8e8; border-radius: 4px; }
-        #mc-pre-img { width: 100%; height: 100%; object-fit: cover; }
+        #mc-pre-img { width: 100%; height: 100%; object-fit: contain; background: var(--mc-gray); }
 
 
         .mc-btn-black {
@@ -510,7 +510,8 @@
         #mc-step-result { display: none; flex-direction: column; gap: 0; align-items: stretch; }
         .mc-res-title { display: block !important; font-family: var(--font-display); font-size: 18px; letter-spacing: 3px; text-transform: uppercase; color: var(--mc-text); padding: 18px 28px 14px; margin: 0; border-bottom: 1px solid var(--mc-gold); text-align: center; }
         #mc-result-img-col { width: 100%; max-height: 65vh; background: var(--mc-gray); overflow: hidden; display: flex; align-items: center; justify-content: center; border: none !important; margin: 0 !important; }
-        #mc-result-img-col img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+        #mc-result-img-col img { width: auto; max-width: 100%; height: auto; max-height: 65vh; object-fit: contain; object-position: center; display: block; margin: 0 auto; }
+        /* Roupa: mostra o corpo inteiro (sem cortar pé/cabeça). */
         #mc-result-actions-col { display: flex; flex-direction: column; gap: 12px; padding: 20px 28px 0; }
         .mc-result-product { text-align: left; padding: 18px; margin-bottom: 2px; background: var(--mc-gray); border: 1px solid #e8e8e8; border-radius: 16px; }
         .mc-result-product-name { font-family: var(--font-body); font-size: 17px; line-height: 1.3; font-weight: 600; color: var(--mc-text); margin-bottom: 8px; }
@@ -539,6 +540,7 @@
             .mc-card-ia.is-result #mc-step-result { display: flex !important; flex-direction: row !important; flex-wrap: wrap !important; width: 100%; align-items: stretch; gap: 0; }
             .mc-card-ia.is-result .mc-res-title { flex-basis: 100%; order: -1; font-size: 16px; padding: 16px 24px; }
             .mc-card-ia.is-result #mc-result-img-col { width: 44% !important; min-height: 380px !important; max-height: 80vh !important; border-right: 1px solid var(--mc-gold) !important; flex-shrink: 0; }
+            .mc-card-ia.is-result #mc-result-img-col img { width: 100%; height: 100%; max-height: 80vh; }
             .mc-card-ia.is-result #mc-result-actions-col { width: 56% !important; padding: 28px 24px !important; gap: 12px; overflow-y: auto; }
             .mc-card-ia.is-result .mc-res-mobile-only { display: flex !important; align-items: center; justify-content: center; gap: 8px; }
             .mc-card-ia.is-result .mc-close-ia { top: 12px; right: 12px; z-index: 10; }
@@ -548,6 +550,7 @@
             .mc-card-ia { max-height: calc(100vh - 20px); border-radius: 18px; }
             .mc-card-ia.is-result #mc-header-provador { display: none !important; }
             .mc-card-ia.is-result #mc-result-img-col { max-height: 42vh; border-radius: 0; }
+            .mc-card-ia.is-result #mc-result-img-col img { max-height: 42vh; }
             .mc-card-ia.is-result #mc-result-actions-col { padding: 16px 20px 20px; gap: 10px; }
             .mc-card-ia.is-result .mc-result-product { padding: 14px 16px; }
             .mc-card-ia.is-result .mc-result-product-name { font-size: 15px; margin-bottom: 6px; }
@@ -625,7 +628,7 @@
                                 <input type="file" id="mc-real-input" accept="image/*" style="display:none">
                             </div>
                             <div id="mc-pre-view" style="display:none;width:120px;height:160px;overflow:hidden;border:1px solid var(--mc-border);">
-                                <img id="mc-pre-img" style="width:100%;height:100%;object-fit:cover;">
+                                <img id="mc-pre-img" style="width:100%;height:100%;object-fit:contain;background:var(--mc-gray);">
                             </div>
                         </div>
                         <div id="mc-terms-row" style="display:block;margin:14px 0 0;font-size:13px;color:#444;text-align:center;line-height:1.6;cursor:pointer;opacity:0.6;user-select:none;">

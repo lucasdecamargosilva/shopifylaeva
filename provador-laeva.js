@@ -849,6 +849,39 @@
             try { return new URLSearchParams(window.location.search).get('variant') || ''; } catch (_) { return ''; }
         }
 
+        // Cor marcada na página (radio/select da opção "Cor"), p/ quando o id da variante não vier.
+        function selectedColorFromPage(product) {
+            const opts = (product.options || []).map(o => (typeof o === 'string' ? o : o.name) || '');
+            const idx = opts.findIndex(n => /cor|color|colour|estampa/i.test(n));
+            if (idx < 0) return { idx: -1, value: '' };
+            const name = opts[idx];
+            const scope = document.querySelector('.product-information, product-form-component, form[action*="/cart/add"]') || document;
+            const checked = Array.from(scope.querySelectorAll('input[type="radio"]:checked')).find(el =>
+                (el.name || '').toLowerCase().indexOf(name.toLowerCase()) !== -1 || (el.closest('fieldset')?.textContent || '').toLowerCase().indexOf(name.toLowerCase()) !== -1);
+            if (checked && checked.value) return { idx: idx, value: checked.value };
+            const sel = Array.from(scope.querySelectorAll('select')).find(el => (el.name || '').toLowerCase().indexOf(name.toLowerCase()) !== -1);
+            return { idx: idx, value: sel ? sel.value : '' };
+        }
+        async function selectedVariantData() {
+            if (!productJsonPromise) {
+                productJsonPromise = fetch(window.location.pathname + '.js', { credentials: 'same-origin' }).then(r => {
+                    if (!r.ok) throw new Error('Produto Shopify indisponível');
+                    return r.json();
+                });
+            }
+            const product = await productJsonPromise;
+            const vars = product.variants || [];
+            let v = null;
+            const color = selectedColorFromPage(product);
+            if (color.value) v = vars.find(x => String(x['option' + (color.idx + 1)] || '').toLowerCase() === color.value.toLowerCase()) || null;
+            if (!v) { const id = selectedVariantId(); v = vars.find(x => String(x.id) === id) || null; }
+            if (!v) return null;
+            let img = (v.featured_image && v.featured_image.src) || (v.featured_media && v.featured_media.preview_image && v.featured_media.preview_image.src) || '';
+            if (img && img.indexOf('//') === 0) img = 'https:' + img;
+            const colorVal = color.idx >= 0 ? (v['option' + (color.idx + 1)] || '') : '';
+            return { id: v.id, title: v.title, color: colorVal, image: img };
+        }
+
         function moneyBRL(cents) {
             return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(cents || 0) / 100);
         }
@@ -1238,10 +1271,17 @@
                     '.product-gallery img, ' +
                     'img[data-product-media]'
                 );
-                const prodImg = prodImgTag
+                let prodImg = prodImgTag
                     ? (prodImgTag.dataset.src || prodImgTag.dataset.lazy || prodImgTag.src)
                     : (document.querySelector('meta[property="og:image"]')?.content || '');
-                const prodName = document.querySelector('h1.product-name, h1.product__title, .product-single__title, h1')?.innerText || document.title;
+                let prodName = document.querySelector('h1.product-name, h1.product__title, .product-single__title, h1')?.innerText || document.title;
+                // Variação (cor) escolhida na página: usa a foto DELA, não a 1ª da galeria.
+                try {
+                    const _v = await selectedVariantData();
+                    if (_v && _v.image) prodImg = _v.image;
+                    if (_v && _v.color && prodName.toLowerCase().indexOf(_v.color.toLowerCase()) === -1) prodName = prodName.trim() + ' - ' + _v.color;
+                    LOG.info('Variação: ' + ((_v && _v.title) || '(padrão)'));
+                } catch (_vErr) { LOG.warn('Variação não identificada: ' + _vErr.message); }
 
 
 

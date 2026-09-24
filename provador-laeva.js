@@ -749,7 +749,10 @@
         openBtn.setAttribute('aria-label', 'Abrir Provador Virtual');
         openBtn.innerHTML = stampImageHTML;
 
+        // Tema Horizon: o slide (.product-media-container) tem on:click que abre o zoom da
+        // foto — o selo precisa ficar FORA dele, no container da galeria.
         const shopifyImgContainers = [
+            '.product-information__media', 'media-gallery',
             '.product-media-container', '.product-gallery__media', '.product__media-item',
             '[data-media-id]', '.product__media', '.product__media-wrapper',
             '.product-gallery', '.media-gallery'

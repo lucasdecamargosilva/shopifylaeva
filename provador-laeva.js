@@ -755,6 +755,7 @@
             '.product-gallery', '.media-gallery'
         ];
 
+        function placeStamp() {
         let placed = false;
         for (const sel of shopifyImgContainers) {
             const el = document.querySelector(sel);
@@ -781,9 +782,11 @@
             openBtn.style.cssText = 'position:fixed;bottom:100px;left:20px;z-index:50;width:60px;height:60px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:none;border:none;padding:0;';
             LOG.warn('Nenhum container encontrado — botão fixado no canto (fallback)');
         }
+        }
+        placeStamp();
 
         // Botão inline acima do Comprar
-        (function injectInlineBtn() {
+        function injectInlineBtn() {
             if (document.querySelector('.laeva-inline-trigger')) return;
             const target = document.querySelector('form[action*="/cart/add"] .product-form-buttons') ||
                 document.querySelector('product-form-component .product-form-buttons') ||
@@ -805,7 +808,22 @@
             inline.addEventListener('click', (e) => { e.preventDefault(); openBtn.click(); });
             target.parentNode.insertBefore(inline, target);
             LOG.ok('Botão inline injetado antes de ' + (target.className || target.tagName));
-        })();
+        }
+        injectInlineBtn();
+
+        // Trocar a variação faz o tema (Horizon) re-renderizar a galeria e o form,
+        // apagando os botões injetados. Recoloca sempre que sumirem.
+        let _plReplaceT = null;
+        new MutationObserver(() => {
+            if (_plReplaceT) return;
+            _plReplaceT = setTimeout(() => {
+                _plReplaceT = null;
+                try {
+                    if (!openBtn.isConnected) placeStamp();
+                    if (!document.querySelector('.laeva-inline-trigger')) injectInlineBtn();
+                } catch (_) {}
+            }, 150);
+        }).observe(document.body, { childList: true, subtree: true });
 
         const modal = document.getElementById('mc-modal-ia');
         const genBtn = document.getElementById('mc-btn-generate');

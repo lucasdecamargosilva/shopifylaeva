@@ -518,7 +518,7 @@
         .mc-result-product-price { font-family: var(--font-display); font-size: 30px; line-height: 1; letter-spacing: 1px; color: var(--mc-text); }
         .mc-card-ia .mc-res-title, #mc-step-result .mc-res-title { display: none !important; }
         /* resultado (01/10): botões menores, nome/preço sem caixa, foto inteira e maior no celular */
-        #mc-step-result #mc-btn-buy-result, #mc-step-result #pl-rl-wa, #mc-step-result #mc-retry-btn { font-size: 14px !important; letter-spacing: 1.5px !important; min-height: 48px !important; padding: 12px 14px !important; font-weight: 600 !important; }
+        #mc-step-result #mc-btn-buy-result, #mc-step-result #pl-rl-wa, #mc-step-result #mc-retry-btn { font-size: 14px !important; letter-spacing: 0.6px !important; min-height: 48px !important; white-space: nowrap !important; padding: 12px 14px !important; font-weight: 600 !important; }
         #mc-step-result #pl-rl-wa { margin: 6px 0 8px !important; }
         #mc-step-result .mc-result-product { background: transparent !important; border: 0 !important; border-radius: 0 !important; padding: 0 0 4px !important; }
         #mc-step-result .mc-result-product-name { font-size: 15px !important; }

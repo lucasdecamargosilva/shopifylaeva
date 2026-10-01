@@ -516,6 +516,15 @@
         .mc-result-product { text-align: left; padding: 18px; margin-bottom: 2px; background: var(--mc-gray); border: 1px solid #e8e8e8; border-radius: 16px; }
         .mc-result-product-name { font-family: var(--font-body); font-size: 17px; line-height: 1.3; font-weight: 600; color: var(--mc-text); margin-bottom: 8px; }
         .mc-result-product-price { font-family: var(--font-display); font-size: 30px; line-height: 1; letter-spacing: 1px; color: var(--mc-text); }
+        .mc-card-ia .mc-res-title, #mc-step-result .mc-res-title { display: none !important; }
+        .pl-rl-old { font-family: var(--font-body); font-size: 13.5px; color: var(--mc-text-light); text-decoration: line-through; line-height: 1.2; letter-spacing: 0; }
+        .pl-rl-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .pl-rl-tag { background: #16a34a; color: #fff; font-family: var(--font-body); font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 20px; white-space: nowrap; line-height: 1; letter-spacing: 0; }
+        .pl-rl-or { display: flex; align-items: center; gap: 8px; margin: 10px 0 0; font-size: 12px; color: var(--mc-text-light); font-family: var(--font-body); }
+        .pl-rl-or:before, .pl-rl-or:after { content: ""; flex: 1; height: 1px; background: #e5e5e5; }
+        #mc-step-result .pl-rl-wa { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin: 8px 0 10px; min-height: 48px; padding: 12px 16px; border: 0; border-radius: inherit; background: #25D366; color: #fff; font-family: var(--font-display); font-size: 14px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; box-sizing: border-box; }
+        #mc-step-result .pl-rl-wa:hover { background: #1ebe5b; }
+        #mc-step-result .pl-rl-wa svg { width: 18px; height: 18px; flex-shrink: 0; }
         .mc-result-product-installments { font-family: var(--font-body); font-size: 12px; line-height: 1.4; color: var(--mc-text-light); margin-top: 7px; }
         #mc-size-recommendation { text-align: center; padding: 14px 16px; border: 1px solid #000; background: #f5f5f5; }
         #mc-size-recommendation p:first-child { margin: 0 0 4px; font-size: 9px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--mc-text-light); }
@@ -679,6 +688,11 @@
                             <div id="mc-provas-restantes-result" class="mc-provas-msg" style="text-align:center;margin-bottom:8px;"></div>
                             <button class="mc-btn-black" id="mc-btn-buy-result" style="display:flex;align-items:center;justify-content:center;gap:8px;">
                                 <i class="ph ph-shopping-bag"></i> Comprar agora
+                            </button>
+                            <div class="pl-rl-or" id="pl-rl-or">ou</div>
+                            <button type="button" class="pl-rl-wa" id="pl-rl-wa">
+                                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35zM12.05 21.5h-.01a9.4 9.4 0 0 1-4.8-1.31l-.34-.2-3.56.93.95-3.47-.22-.36a9.4 9.4 0 0 1-1.44-5.01c0-5.2 4.23-9.43 9.44-9.43 2.52 0 4.89.98 6.67 2.77a9.37 9.37 0 0 1 2.76 6.67c0 5.2-4.24 9.43-9.45 9.43zm8.03-17.46A11.3 11.3 0 0 0 12.05.72C5.79.72.7 5.8.7 12.06c0 2 .52 3.95 1.52 5.67L.6 23.28l5.68-1.49a11.34 11.34 0 0 0 5.77 1.47h.01c6.25 0 11.34-5.09 11.35-11.35 0-3.03-1.18-5.88-3.33-8.02z"/></svg>
+                                Comprar pelo WhatsApp
                             </button>
                             <button class="mc-btn-outline mc-res-mobile-only" id="mc-retry-btn" style="display:flex !important;align-items:center;justify-content:center;gap:8px;">
                                 <i class="ph ph-camera"></i> Provar outra foto
@@ -929,7 +943,7 @@
             if (!box || !nameEl || !priceEl || !installmentsEl) return;
 
             const name = (document.querySelector('h1.product-name, h1.product__title, .product-single__title, h1')?.innerText || document.title || '').trim();
-            let priceCents = 0;
+            let priceCents = 0, compareCents = 0;
             try {
                 if (!productJsonPromise) {
                     productJsonPromise = fetch(window.location.pathname + '.js', { credentials: 'same-origin' }).then(r => {
@@ -941,6 +955,7 @@
                 const variantId = selectedVariantId();
                 const variant = (product.variants || []).find(v => String(v.id) === variantId) || (product.variants || [])[0];
                 priceCents = Number(variant?.price || product.price || 0);
+                compareCents = Number(variant?.compare_at_price || 0);
             } catch (e) {
                 LOG.warn('Preço via Shopify indisponível: ' + e.message);
             }
@@ -955,7 +970,19 @@
             if (!installments && priceCents) installments = 'ou 3x de ' + moneyBRL(Math.round(priceCents / 3));
 
             nameEl.textContent = name;
-            priceEl.textContent = price;
+            // Padrão das óticas: "de" riscado + preço grande + selo -% (só quando há preço "de")
+            priceEl.textContent = '';
+            if (compareCents > priceCents && priceCents > 0) {
+                const _old = document.createElement('div'); _old.className = 'pl-rl-old'; _old.textContent = moneyBRL(compareCents);
+                const _line = document.createElement('div'); _line.className = 'pl-rl-line';
+                const _big = document.createElement('span'); _big.textContent = price;
+                const _tag = document.createElement('span'); _tag.className = 'pl-rl-tag'; _tag.textContent = '-' + Math.round((1 - priceCents / compareCents) * 100) + '%';
+                _line.appendChild(_big); _line.appendChild(_tag);
+                priceEl.appendChild(_old); priceEl.appendChild(_line);
+            } else {
+                priceEl.textContent = price;
+            }
+            if (installments && !/sem juros/i.test(installments) && /^ou\s+\d+x/i.test(installments)) installments += ' sem juros';
             installmentsEl.textContent = installments;
             installmentsEl.style.display = installments ? 'block' : 'none';
             box.style.display = (name || price) ? 'block' : 'none';
@@ -1029,6 +1056,24 @@
             }
         };
 
+        // Rastreio do clique em comprar (mesmo webhook da frota) — canal site/whatsapp
+        function plTrackBuy(canal) {
+            try {
+                const _nm = (document.getElementById('mc-result-product-name') || {}).textContent || document.title;
+                fetch('https://n8n.segredosdodrop.com/webhook/pl-provador-buy-click', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phone: (phoneInput && phoneInput.value) || '', origin: location.origin, produto: _nm, canal: canal }) }).catch(() => {});
+            } catch (_) {}
+        }
+        buyResultBtn.addEventListener('click', () => plTrackBuy('site'), true);
+        const PL_WA_LAEVA = '5511989346227'; // WhatsApp do site da Laeva
+        const waBtn = document.getElementById('pl-rl-wa');
+        if (waBtn) waBtn.onclick = async () => {
+            plTrackBuy('whatsapp');
+            let variante = '';
+            try { const _v = await selectedVariantData(); variante = (_v && _v.title) || ''; } catch (_) {}
+            const nome = ((document.getElementById('mc-result-product-name') || {}).textContent || '').trim();
+            const msg = 'Olá! Provei no provador virtual e quero comprar: ' + nome + (variante ? ' (' + variante + ')' : '') + ' ' + location.href.split('#')[0];
+            window.open('https://wa.me/' + PL_WA_LAEVA + '?text=' + encodeURIComponent(msg), '_blank');
+        };
         modal.addEventListener('click', (e) => {
             if (e.target === modal) { LOG.info('Clique fora do card — fechando modal'); closeModal(); }
         });
@@ -1195,6 +1240,12 @@
 
             try {
                 LOG.info('Botão "Sim, gerar foto" clicado');
+                // Mostra a tela de geração NA HORA do clique (antes esperava a consulta de limite → no 4G parecia travado).
+                try {
+                    if (confirmStep) confirmStep.style.display = 'none';
+                    if (uploadStep) uploadStep.style.display = 'none';
+                    const _lb0 = document.getElementById('mc-loading-box'); if (_lb0) _lb0.style.display = 'flex';
+                } catch (_) {}
 
                 // 🚨 LIMITE DE USO DIÁRIO — Supabase + localStorage 🚨
                 const today = new Date().toISOString().slice(0, 10);
@@ -1366,6 +1417,11 @@ const fd = new FormData();
 
                     if (prodImg) {
                         try {
+                            try {
+                                if (prodImg.indexOf('//') === 0) prodImg = 'https:' + prodImg;
+                                const _u = new URL(prodImg, location.href);
+                                if (/cdn\.shopify\.com|\/cdn\/shop\/|\/s\/files\//.test(_u.href)) { _u.searchParams.set('width', '1200'); prodImg = _u.href; }
+                            } catch (_) {}
                             LOG.info('Baixando imagem do produto para anexar...');
                             const b = await fetch(prodImg).then(r => r.blob());
                             fd.append('product_image', b, 'p.png');

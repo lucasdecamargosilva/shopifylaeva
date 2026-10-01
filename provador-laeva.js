@@ -327,7 +327,7 @@
     // ─── ESTILOS ──────────────────────────────────────────────────────────────────
 
     const styles = `
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
 
         :root {
             --mc-primary: #111111;
@@ -337,8 +337,8 @@
             --mc-text: #111111;
             --mc-text-light: #8a7a5a;
             --mc-gold: #000000;
-            --font-display: 'Bebas Neue', sans-serif;
-            --font-body: 'DM Sans', sans-serif;
+            --font-display: 'Quicksand', sans-serif;
+            --font-body: 'Quicksand', sans-serif;
         }
 
         @keyframes mc-shake { 0%,50%,100%{transform:rotate(0deg)} 10%,30%{transform:rotate(-10deg)} 20%,40%{transform:rotate(10deg)} }
@@ -718,7 +718,7 @@
         LOG.info('Iniciando provador...');
 
         const fontLink = document.createElement('link');
-        fontLink.href = 'https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap';
+        fontLink.href = 'https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap';
         fontLink.rel = 'stylesheet';
         document.head.appendChild(fontLink);
 

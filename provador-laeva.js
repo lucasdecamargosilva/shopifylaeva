@@ -517,6 +517,7 @@
         .mc-result-product-name { font-family: var(--font-body); font-size: 17px; line-height: 1.3; font-weight: 600; color: var(--mc-text); margin-bottom: 8px; }
         .mc-result-product-price { font-family: var(--font-display); font-size: 30px; line-height: 1; letter-spacing: 1px; color: var(--mc-text); }
         .mc-card-ia .mc-res-title, #mc-step-result .mc-res-title { display: none !important; }
+        #mc-step-result #pl-rl-or, #mc-step-result #pl-rl-wa { display: none !important; } /* WhatsApp de compra desligado 01/10 (Lucas): só Comprar */
         /* resultado (01/10): botões menores, nome/preço sem caixa, foto inteira e maior no celular */
         #mc-step-result #mc-btn-buy-result, #mc-step-result #pl-rl-wa, #mc-step-result #mc-retry-btn { font-size: 14px !important; letter-spacing: 0.6px !important; min-height: 48px !important; white-space: nowrap !important; padding: 12px 14px !important; font-weight: 600 !important; }
         #mc-step-result #pl-rl-wa { margin: 6px 0 8px !important; }

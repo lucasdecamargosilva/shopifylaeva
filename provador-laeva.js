@@ -517,6 +517,17 @@
         .mc-result-product-name { font-family: var(--font-body); font-size: 17px; line-height: 1.3; font-weight: 600; color: var(--mc-text); margin-bottom: 8px; }
         .mc-result-product-price { font-family: var(--font-display); font-size: 30px; line-height: 1; letter-spacing: 1px; color: var(--mc-text); }
         .mc-card-ia .mc-res-title, #mc-step-result .mc-res-title { display: none !important; }
+        /* resultado (01/10): botões menores, nome/preço sem caixa, foto inteira e maior no celular */
+        #mc-step-result #mc-btn-buy-result, #mc-step-result #pl-rl-wa, #mc-step-result #mc-retry-btn { font-size: 14px !important; letter-spacing: 1.5px !important; min-height: 48px !important; padding: 12px 14px !important; font-weight: 600 !important; }
+        #mc-step-result #pl-rl-wa { margin: 6px 0 8px !important; }
+        #mc-step-result .mc-result-product { background: transparent !important; border: 0 !important; border-radius: 0 !important; padding: 0 0 4px !important; }
+        #mc-step-result .mc-result-product-name { font-size: 15px !important; }
+        #mc-step-result .mc-result-product-price { font-size: 24px !important; font-weight: 600 !important; letter-spacing: 0 !important; }
+        #mc-result-img-col img, .mc-card-ia.is-result #mc-result-img-col img { object-fit: contain !important; }
+        @media (max-width: 767px) {
+            .mc-card-ia.is-result #mc-result-img-col { max-height: 62vh !important; }
+            .mc-card-ia.is-result #mc-result-img-col img { max-height: 62vh !important; width: auto !important; max-width: 100% !important; height: auto !important; }
+        }
         .pl-rl-old { font-family: var(--font-body); font-size: 13.5px; color: var(--mc-text-light); text-decoration: line-through; line-height: 1.2; letter-spacing: 0; }
         .pl-rl-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         .pl-rl-tag { background: #16a34a; color: #fff; font-family: var(--font-body); font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 20px; white-space: nowrap; line-height: 1; letter-spacing: 0; }

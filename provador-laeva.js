@@ -522,7 +522,7 @@
         .pl-rl-tag { background: #16a34a; color: #fff; font-family: var(--font-body); font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 20px; white-space: nowrap; line-height: 1; letter-spacing: 0; }
         .pl-rl-or { display: flex; align-items: center; gap: 8px; margin: 10px 0 0; font-size: 12px; color: var(--mc-text-light); font-family: var(--font-body); }
         .pl-rl-or:before, .pl-rl-or:after { content: ""; flex: 1; height: 1px; background: #e5e5e5; }
-        #mc-step-result .pl-rl-wa { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin: 8px 0 10px; min-height: 48px; padding: 12px 16px; border: 0; border-radius: inherit; background: #25D366; color: #fff; font-family: var(--font-display); font-size: 14px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; box-sizing: border-box; }
+        #mc-step-result .pl-rl-wa { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin: 8px 0 10px; min-height: 55px; padding: 12px 16px; border: 0; border-radius: 14px; background: #25D366; color: #fff; font-family: var(--font-display); font-size: 18px; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; box-sizing: border-box; }
         #mc-step-result .pl-rl-wa:hover { background: #1ebe5b; }
         #mc-step-result .pl-rl-wa svg { width: 18px; height: 18px; flex-shrink: 0; }
         .mc-result-product-installments { font-family: var(--font-body); font-size: 12px; line-height: 1.4; color: var(--mc-text-light); margin-top: 7px; }

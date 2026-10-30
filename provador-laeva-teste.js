@@ -963,6 +963,20 @@
             const chave = location.pathname;
             if (plLookTam !== chave) { plLookTam = chave; plLook = null; plLookOps = []; try { plLookOps = await plLookCarregar(); } catch (_) { plLookOps = []; } }
             plLookPintar();
+            // Foto da sugestão na mesma cor da peça da página (é a cor que a prova vai vestir)
+            try {
+                const v1 = await selectedVariantData(); const cor = String((v1 && v1.color) || '').toLowerCase();
+                if (!cor) return;
+                let mudou = false;
+                await Promise.all(plLookOps.map(async o => {
+                    if (o._cor === cor) return;
+                    const pj = await fetch('/products/' + o.handle + '.js').then(r => r.json());
+                    const i = (pj.options || []).findIndex(x => /cor|color/i.test(x.name || x));
+                    const v = i >= 0 && (pj.variants || []).find(x => String(x['option' + (i + 1)] || '').toLowerCase() === cor && x.featured_image);
+                    if (v) { o.img = v.featured_image.src; o._cor = cor; mudou = true; }
+                }));
+                if (mudou) plLookPintar();
+            } catch (_) {}
         }
 
         // ── Layout Editorial (30/10/2026): peça no topo, gerando com as peças, look no resultado ──
@@ -1019,7 +1033,6 @@
                 const tam1 = sel1 ? tamDe(p1, sel1) : '';
                 const sel2 = vs2.find(v => v.available && tamDe(p2, v) === tam1) || vs2.find(v => v.available) || vs2[0];
                 const lbl = document.createElement('div'); lbl.className = 'ed-lbl'; lbl.textContent = 'Seu look'; box.appendChild(lbl);
-                const total = document.createElement('div'); total.className = 'ed-total';
                 const linha = (p, vs, sel, img) => {
                     const row = document.createElement('div'); row.className = 'ed-item';
                     const im = document.createElement('img'); im.src = plImgUrl((sel && sel.featured_image && sel.featured_image.src) || img || p.featured_image, 200); im.alt = '';
@@ -1028,17 +1041,14 @@
                     const s = document.createElement('small');
                     const ss = document.createElement('select');
                     vs.forEach(v => { const o = document.createElement('option'); o.value = v.id; o.textContent = 'Tam. ' + tamDe(p, v) + (v.available ? '' : ' (esgotado)'); o.disabled = !v.available; if (sel && v.id === sel.id) o.selected = true; ss.appendChild(o); });
-                    const info = () => { const v = vs.find(x => String(x.id) === ss.value) || sel; s.textContent = [edTitulo(corDe(p, v)), v ? moneyBRL(v.price) : ''].filter(Boolean).join(' · '); };
-                    ss.onchange = () => { info(); somar(); };
+                    const info = () => { const v = vs.find(x => String(x.id) === ss.value) || sel; s.textContent = edTitulo(corDe(p, v)); };
+                    ss.onchange = info;
                     info();
                     t.appendChild(b); t.appendChild(s); row.appendChild(im); row.appendChild(t); row.appendChild(ss);
-                    row._preco = () => { const v = vs.find(x => String(x.id) === ss.value); return v ? Number(v.price) : 0; };
                     box.appendChild(row);
                     return row;
                 };
-                const r1 = linha(p1, vs1, sel1, edImg1), r2 = linha(p2, vs2, sel2, plLook.img);
-                function somar() { total.innerHTML = ''; const a = document.createElement('span'); a.textContent = 'Total do look'; const z = document.createElement('b'); z.textContent = moneyBRL(r1._preco() + r2._preco()); total.appendChild(a); total.appendChild(z); }
-                somar(); box.appendChild(total);
+                linha(p1, vs1, sel1, edImg1); linha(p2, vs2, sel2, plLook.img);
                 box.style.display = 'block';
                 if (pBox) pBox.style.display = 'none';
                 if (tro) tro.style.display = 'flex';

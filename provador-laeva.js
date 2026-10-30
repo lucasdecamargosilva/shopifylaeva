@@ -327,7 +327,7 @@
     // ─── ESTILOS ──────────────────────────────────────────────────────────────────
 
     const styles = `
-        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Inter+Tight:wght@300;400;500;600&display=swap');
 
         :root {
             --mc-primary: #111111;
@@ -580,6 +580,75 @@
         #mc-step-error { display: none; flex-direction: column; gap: 24px; align-items: center; text-align: center; padding: 52px 28px; }
         #mc-step-error h2 { font-family: var(--font-display); font-size: 22px; letter-spacing: 3px; text-transform: uppercase; margin: 0; font-weight: 400; }
         #mc-step-error p { font-size: 13px; color: var(--mc-text-light); margin: 0; line-height: 1.6; }
+
+        /* ── Layout Editorial (30/10/2026) ── */
+        #mc-modal-ia { background: rgba(17,17,17,0.55) !important; --font-display: 'Inter Tight', sans-serif; --font-body: 'Inter Tight', sans-serif; }
+        #mc-modal-ia .mc-card-ia { border-radius: 4px !important; box-shadow: 0 30px 80px rgba(0,0,0,0.25) !important; }
+        #mc-modal-ia .mc-content-scroll { padding: 0 0 6px !important; text-align: left !important; gap: 0 !important; }
+        #mc-modal-ia .mc-close-ia { top: 11px !important; right: 14px !important; color: #111 !important; font-size: 24px !important; }
+        #mc-modal-ia #mc-header-provador { flex-direction: row !important; justify-content: flex-start !important; align-items: center !important; gap: 14px !important; padding: 17px 56px 15px 24px !important; border-bottom: 1px solid #111 !important; }
+        #mc-modal-ia .ed-logo { height: 15px; width: auto; display: block; }
+        #mc-modal-ia .ed-tag { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: #111; }
+        #ed-prod { display: flex; gap: 12px; align-items: center; padding: 14px 24px; border-bottom: 1px solid #e6e6e6; }
+        #ed-prod img { width: 44px; height: 58px; object-fit: cover; background: #f3f3f3; flex: none; }
+        #ed-prod b { display: block; font-size: 13px; font-weight: 500; color: #111; }
+        #ed-prod small { font-size: 11px; color: #777; }
+        .mc-card-ia.is-result #ed-prod { display: none !important; }
+        #mc-modal-ia #mc-step-upload { gap: 0 !important; padding: 0 24px; }
+        #mc-modal-ia .mc-lead-form { gap: 0 !important; }
+        #mc-modal-ia .ed-sec { padding-top: 20px; }
+        #mc-modal-ia .ed-n { font-size: 10px; letter-spacing: .2em; color: #999; text-transform: uppercase; }
+        #mc-modal-ia .ed-h { font-size: 15px; font-weight: 500; letter-spacing: .02em; margin: 4px 0 10px; text-transform: uppercase; color: #111; }
+        #mc-modal-ia .mc-lead-form input.mc-input { height: 44px !important; padding: 0 !important; border: 0 !important; border-bottom: 1px solid #111 !important; border-radius: 0 !important; background: transparent !important; text-align: left !important; font-size: 16px !important; }
+        #mc-modal-ia .mc-lead-form input.mc-input:focus { background: transparent !important; border-bottom-width: 2px !important; }
+        #mc-modal-ia .mc-provas-msg { border-radius: 0 !important; font-size: 12px !important; text-align: left !important; }
+        #mc-modal-ia .ed-foto { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+        #mc-modal-ia #mc-trigger-upload { width: 96px !important; height: 128px !important; border: 1px dashed #111 !important; border-radius: 0 !important; background: #fff !important; flex: none; }
+        #mc-modal-ia #mc-trigger-upload i { font-size: 24px !important; color: #111 !important; margin-bottom: 6px !important; }
+        #mc-modal-ia #mc-trigger-upload span { font-size: 9px !important; letter-spacing: .16em !important; }
+        #mc-modal-ia #mc-pre-view { width: 96px !important; height: 128px !important; border: 1px solid #111 !important; border-radius: 0 !important; flex: none; }
+        #mc-modal-ia #mc-pre-img { object-fit: cover !important; }
+        #mc-modal-ia .ed-tips { margin: 0; padding: 2px 0 0; list-style: none; font-size: 12px; color: #555; line-height: 1.9; flex: 1; min-width: 130px; }
+        #mc-modal-ia .ed-tips li::before { content: '— '; color: #111; }
+        #mc-modal-ia .ed-aviso { font-size: 11px; color: #777; line-height: 1.5; margin: 10px 0 0; }
+        #mc-modal-ia #mc-look-sub { font-size: 12px !important; color: #777 !important; margin: -4px 0 10px !important; }
+        #mc-modal-ia #mc-look-list { gap: 8px !important; }
+        .ed-card { flex: 0 0 96px; cursor: pointer; user-select: none; }
+        .ed-card .im { position: relative; height: 128px; outline: 1px solid #e6e6e6; outline-offset: -1px; background: #f3f3f3; }
+        .ed-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .ed-card .ck { position: absolute; top: 6px; right: 6px; width: 20px; height: 20px; border-radius: 50%; border: 1px solid #111; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; }
+        .ed-card.on .im { outline: 2px solid #111; outline-offset: -2px; }
+        .ed-card.on .ck { background: #111; }
+        .ed-card.on .ck::after { content: '✓'; }
+        .ed-card p { margin: 6px 0 0; font-size: 11px; line-height: 1.3; color: #111; }
+        #mc-modal-ia #mc-terms-row { text-align: left !important; font-size: 12px !important; margin: 18px 0 0 !important; color: #555 !important; }
+        #mc-modal-ia #mc-terms-icon { font-size: 16px !important; }
+        #mc-modal-ia #mc-btn-generate, #mc-modal-ia #mc-step-result #mc-btn-buy-result { border-radius: 0 !important; font-family: 'Inter Tight', sans-serif !important; font-size: 12px !important; font-weight: 500 !important; letter-spacing: .22em !important; text-transform: uppercase !important; padding: 17px !important; min-height: 52px !important; }
+        #mc-modal-ia #mc-btn-generate { margin: 14px 0 18px !important; }
+        #mc-modal-ia #mc-step-result .mc-btn-outline { border: 1px solid #111 !important; border-radius: 0 !important; font-family: 'Inter Tight', sans-serif !important; font-size: 11px !important; font-weight: 500 !important; letter-spacing: .16em !important; text-transform: uppercase !important; min-height: 46px !important; padding: 12px 10px !important; }
+        #mc-modal-ia .ed-btns2 { display: flex; gap: 8px; }
+        #mc-modal-ia .ed-btns2 > button { flex: 1; }
+        #mc-modal-ia #mc-loading-box { padding: 0 !important; min-height: 0 !important; }
+        #mc-modal-ia .ed-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #111; height: 300px; width: 100%; }
+        #mc-modal-ia .ed-duo.solo { grid-template-columns: 1fr; }
+        #mc-modal-ia .ed-duo img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.05); background: #f3f3f3; }
+        #mc-modal-ia .ed-load-tx { padding: 20px 24px 24px; text-align: left; width: 100%; box-sizing: border-box; }
+        #mc-modal-ia .ed-load-tx b { display: block; font-size: 15px; font-weight: 500; text-transform: uppercase; letter-spacing: .04em; color: #111; }
+        #mc-modal-ia .ed-load-tx small { display: block; font-size: 12px; color: #777; margin-top: 3px; }
+        #mc-modal-ia .ed-prog { height: 2px; background: #eee; margin-top: 16px; position: relative; overflow: hidden; }
+        #mc-modal-ia .ed-prog i { position: absolute; top: 0; left: 0; height: 100%; width: 30%; background: #111; animation: mc-slide 1.5s infinite linear; }
+        #mc-modal-ia #mc-result-img-col { background: #f3f3f3 !important; }
+        #mc-modal-ia #ed-look { border-top: 1px solid #111; }
+        #mc-modal-ia .ed-lbl { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: #999; padding: 12px 0 2px; }
+        #mc-modal-ia .ed-item { display: flex; gap: 10px; align-items: center; padding: 9px 0; border-bottom: 1px solid #eee; }
+        #mc-modal-ia .ed-item img { width: 40px; height: 52px; object-fit: cover; background: #f3f3f3; flex: none; }
+        #mc-modal-ia .ed-item .t { flex: 1; min-width: 0; }
+        #mc-modal-ia .ed-item b { display: block; font-size: 12.5px; font-weight: 500; color: #111; }
+        #mc-modal-ia .ed-item small { font-size: 11.5px; color: #666; }
+        #mc-modal-ia .ed-item select { font: 400 12px 'Inter Tight', sans-serif; border: 1px solid #111; border-radius: 0; padding: 6px 8px; background: #fff; color: #111; }
+        #mc-modal-ia .ed-total { display: flex; justify-content: space-between; font-size: 13px; padding: 10px 0 2px; color: #111; }
+        #mc-modal-ia .ed-total b { font-weight: 600; }
+        #mc-modal-ia .mc-powered-footer { background: #fff !important; border-top: 1px solid #eee !important; }
     `
     const stampImageHTML = `<img src="https://i.ibb.co/4wFQF9pb/provador-tag.webp" alt="Provador Virtual" style="width:100%;height:100%;object-fit:contain;">`;
 
@@ -589,16 +658,12 @@
             <div class="mc-card-ia">
                 <button type="button" class="mc-close-ia" id="mc-close-btn">&times;</button>
                 <div class="mc-content-scroll">
-                    <div id="mc-header-provador">
-                        <h1 style="margin:0 0 16px 0;font-size:20px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">Provador Virtual</h1>
-                        <div style="margin:0 0 4px;text-align:center;">
-                            <img src="${LOGO_URL}" alt="Laeva" style="height:32px;width:auto;display:inline-block;object-fit:contain;" onerror="this.style.display='none'"/>
-                        </div>
-                    </div>
+                    <div id="mc-header-provador"><img class="ed-logo" src="${LOGO_URL}" alt="Laeva" onerror="this.style.display='none'"/><span class="ed-tag">Provador virtual</span></div>
+                    <div id="ed-prod"><img id="ed-prod-img" alt=""><div><b id="ed-prod-nome"></b><small id="ed-prod-sub">voc&ecirc; est&aacute; provando</small></div></div>
                     <div id="mc-step-upload">
-                        <div class="mc-lead-form" style="margin-bottom:0;">
+                        <div class="mc-lead-form ed-sec" style="margin-bottom:0;">
                             <div class="mc-group">
-                                <label>SEU CELULAR</label>
+                                <div class="ed-n">01</div><div class="ed-h">Seu WhatsApp</div>
                                 <input type="tel" id="mc-phone" class="mc-input" placeholder="(11) 99999-9999" maxlength="15">
                                 <div id="mc-phone-error" class="mc-status-msg">Insira um n\u00famero v\u00e1lido</div>
                                 <div id="mc-provas-restantes" class="mc-provas-msg"></div>
@@ -632,29 +697,17 @@
                             -->
 
                         </div>
-                        <p style="margin:20px 0 10px;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--mc-text-light);text-align:center;">Sua foto deve seguir estes requisitos:</p>
-                        <div class="mc-tips-grid" style="margin-top:0;">
-                            <div class="mc-tip-item"><i class="ph ph-t-shirt"></i><span>Com Roupa</span></div>
-                            <div class="mc-tip-item"><i class="ph ph-person"></i><span>Corpo Inteiro</span></div>
-                            <div class="mc-tip-item"><i class="ph ph-sun"></i><span>Boa Luz</span></div>
-                        </div>
-                        <div class="mc-warning-back-front" style="display:block !important;visibility:visible !important;margin:14px 0 0;font-size:13px;color:#444;text-align:center;line-height:1.6;padding:14px 12px;background:#f5f5f5;border:1px solid #000;border-radius:4px;font-weight:500;">&#9888;&#65039; Se voc&#234; escolheu a foto de costas, envie uma foto sua tamb&#233;m de costas. Se escolheu a frente, envie de frente.</div>
-                        <div style="display:flex;gap:20px;justify-content:center;margin-top:20px;">
-
-
-
-                            <div id="mc-trigger-upload" style="width:120px;height:160px;border:1px solid var(--mc-border);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:var(--mc-gray);transition:0.3s;">
-                                <i class="ph ph-camera-plus" style="font-size:32px;color:var(--mc-primary);margin-bottom:10px;"></i>
-                                <span style="font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">Enviar Foto</span>
-                                <input type="file" id="mc-real-input" accept="image/*" style="display:none">
+                        <div class="ed-sec"><div class="ed-n">02</div><div class="ed-h">Sua foto</div>
+                            <div class="ed-foto">
+                                <div id="mc-trigger-upload"><i class="ph ph-camera-plus"></i><span>Enviar foto</span><input type="file" id="mc-real-input" accept="image/*" style="display:none"></div>
+                                <div id="mc-pre-view" style="display:none;"><img id="mc-pre-img"></div>
+                                <ul class="ed-tips"><li>Corpo inteiro</li><li>Roupa justa ou leve</li><li>Boa luz, fundo limpo</li></ul>
                             </div>
-                            <div id="mc-pre-view" style="display:none;width:120px;height:160px;overflow:hidden;border:1px solid var(--mc-border);">
-                                <img id="mc-pre-img" style="width:100%;height:100%;object-fit:contain;background:var(--mc-gray);">
-                            </div>
+                            <div class="ed-aviso">Se escolheu a foto de costas do produto, envie uma foto sua de costas tamb&eacute;m.</div>
                         </div>
                         <!-- 30/10/2026: COMBINE COM OUTRA PEÇA (look completo: a peça da página + 1 sugestão escolhida) -->
-                        <div id="mc-look-row" style="display:none;margin:18px 0 0;text-align:left;">
-                            <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#111;">Combine com outra peça</div>
+                        <div id="mc-look-row" class="ed-sec" style="display:none;text-align:left;">
+                            <div class="ed-n">03 &middot; opcional</div><div class="ed-h">Combine com outra pe&ccedil;a</div>
                             <div id="mc-look-sub" style="font-size:12px;color:#666;margin:4px 0 10px;">Escolha uma e prove as duas juntas (opcional)</div>
                             <div id="mc-look-list" style="display:flex;gap:10px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none;"></div>
                         </div>
@@ -672,17 +725,9 @@
                     </div>
 
 
-                    <div id="mc-loading-box" style="display:none;padding:60px 28px;text-align:center;flex-direction:column;align-items:center;justify-content:center;min-height:240px;">
-                        <div class="mc-loading-texts" style="position:relative;height:36px;width:100%;display:flex;align-items:center;justify-content:center;margin-bottom:24px;">
-                            <div class="mc-loading-t1" style="position:absolute;width:100%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:15px;letter-spacing:2px;white-space:nowrap;font-weight:600;text-transform:uppercase;color:var(--mc-text);animation:mc-alt-show 3.6s ease-in-out infinite;">Gerando Prova Virtual</div>
-                            <a href="https://provoulevou.com.br?utm_source=widget&utm_medium=lojista&utm_campaign=laeva" target="_blank" class="mc-loading-t2" style="position:absolute;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;opacity:0;animation:mc-alt-hide 3.6s ease-in-out infinite;">
-                                <span style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--mc-text-light);font-family:var(--font-body);">Powered by</span>
-                                <img src="https://i.ibb.co/MD3B4FQf/Logo-provou-preto-1.png" alt="Provou Levou" style="height:13px;width:auto;opacity:0.8;">
-                            </a>
-                        </div>
-                        <div style="height:1px;background:#e8e8e8;width:100%;position:relative;overflow:hidden;">
-                            <div style="position:absolute;top:0;left:0;height:100%;width:30%;background:var(--mc-text);animation:mc-slide 1.5s infinite linear;"></div>
-                        </div>
+                    <div id="mc-loading-box" style="display:none;flex-direction:column;">
+                        <div id="ed-duo" class="ed-duo solo"><img id="ed-duo-1" alt=""><img id="ed-duo-2" alt="" style="display:none;"></div>
+                        <div class="ed-load-tx"><b id="ed-load-tit">Vestindo a pe&ccedil;a em voc&ecirc;</b><small id="ed-load-sub"></small><div class="ed-prog"><i></i></div></div>
                     </div>
                     <div id="mc-step-result">
                         <span class="mc-res-title">Veja como ficou em voc&ecirc;</span>
@@ -695,6 +740,7 @@
                                 <div class="mc-result-product-price" id="mc-result-product-price"></div>
                                 <div class="mc-result-product-installments" id="mc-result-product-installments"></div>
                             </div>
+                            <div id="ed-look" style="display:none;"></div>
                             <!-- RECOMENDAÇÃO DE TAMANHO DESATIVADA TEMPORARIAMENTE
                             <div id="mc-size-recommendation" style="display:none;">
                                 <p>Tamanho Recomendado</p>
@@ -705,16 +751,14 @@
 
                             <div id="mc-provas-restantes-result" class="mc-provas-msg" style="text-align:center;margin-bottom:8px;"></div>
                             <button class="mc-btn-black" id="mc-btn-buy-result" style="display:flex;align-items:center;justify-content:center;gap:8px;">
-                                <i class="ph ph-shopping-bag"></i> Comprar agora
+                                Adicionar &agrave; sacola
                             </button>
                             <div class="pl-rl-or" id="pl-rl-or">ou</div>
                             <button type="button" class="pl-rl-wa" id="pl-rl-wa">
                                 <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35zM12.05 21.5h-.01a9.4 9.4 0 0 1-4.8-1.31l-.34-.2-3.56.93.95-3.47-.22-.36a9.4 9.4 0 0 1-1.44-5.01c0-5.2 4.23-9.43 9.44-9.43 2.52 0 4.89.98 6.67 2.77a9.37 9.37 0 0 1 2.76 6.67c0 5.2-4.24 9.43-9.45 9.43zm8.03-17.46A11.3 11.3 0 0 0 12.05.72C5.79.72.7 5.8.7 12.06c0 2 .52 3.95 1.52 5.67L.6 23.28l5.68-1.49a11.34 11.34 0 0 0 5.77 1.47h.01c6.25 0 11.34-5.09 11.35-11.35 0-3.03-1.18-5.88-3.33-8.02z"/></svg>
                                 Comprar pelo WhatsApp
                             </button>
-                            <button class="mc-btn-outline mc-res-mobile-only" id="mc-retry-btn" style="display:flex !important;align-items:center;justify-content:center;gap:8px;">
-                                <i class="ph ph-camera"></i> Provar outra foto
-                            </button>
+                            <div class="ed-btns2"><button class="mc-btn-outline mc-res-mobile-only" id="mc-retry-btn" style="display:flex !important;align-items:center;justify-content:center;">Outra foto</button><button type="button" class="mc-btn-outline" id="ed-trocar" style="display:none;">Trocar pe&ccedil;a</button></div>
                             <div id="mc-related-products" style="display:none;">
                                 <h4>Veja tamb&eacute;m</h4>
                                 <div class="mc-related-grid" id="mc-related-grid"></div>
@@ -872,7 +916,8 @@
             if (/vestido|macac(a|o)|macaquinho|body\b|jardineira/.test(n)) return 'inteira';
             if (/\b(calca|saia|short|shorts|bermuda|legging|ciclista|jogger|pantalona|flare|bike)\b/.test(n)) return 'baixo';
             return 'cima'; };
-        const plImgUrl = (u) => { u = String(u || ''); if (u.indexOf('//') === 0) u = 'https:' + u; try { const x = new URL(u, location.href); x.searchParams.set('width', '300'); return x.href; } catch (_) { return u; } };
+        const plImgUrl = (u, w) => { u = String(u || ''); if (u.indexOf('//') === 0) u = 'https:' + u; try { const x = new URL(u, location.href); x.searchParams.set('width', String(w || 300)); return x.href; } catch (_) { return u; } };
+        const edTitulo = (s) => String(s || '').trim().toLowerCase().replace(/(^|[\s\-])(\S)/g, (m, a, b) => a + b.toUpperCase());
         async function plLookCarregar() {
             const atual = ((document.querySelector('h1.product-name, h1.product__title, .product-single__title, h1') || {}).innerText || '').trim();
             const lado = plParte(atual);
@@ -900,24 +945,115 @@
             list.textContent = '';
             plLookOps.forEach(o => {
                 const sel = plLook && plLook.handle === o.handle;
-                const c = document.createElement('div');
-                c.style.cssText = 'flex:0 0 96px;cursor:pointer;user-select:none;position:relative;border:' + (sel ? '2px solid #111' : '1px solid #ddd') + ';padding:' + (sel ? '3px' : '4px') + ';background:#fff;';
+                const c = document.createElement('div'); c.className = 'ed-card' + (sel ? ' on' : '');
+                const box = document.createElement('div'); box.className = 'im';
                 const im = document.createElement('img'); im.src = plImgUrl(o.img); im.alt = o.nome;
-                im.style.cssText = 'display:block;width:100%;height:110px;object-fit:cover;background:#f5f5f5;';
-                const t = document.createElement('div'); t.textContent = o.nome;
-                t.style.cssText = 'font-size:10px;line-height:1.3;color:#111;margin-top:5px;height:26px;overflow:hidden;text-transform:uppercase;letter-spacing:.3px;';
-                c.appendChild(im); c.appendChild(t);
-                if (sel) { const ck = document.createElement('div'); ck.innerHTML = '&#10003;'; ck.style.cssText = 'position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:#111;color:#fff;font-size:12px;line-height:20px;text-align:center;'; c.appendChild(ck); }
+                const ck = document.createElement('span'); ck.className = 'ck';
+                box.appendChild(im); box.appendChild(ck);
+                const t = document.createElement('p'); t.textContent = edTitulo(o.nome);
+                c.appendChild(box); c.appendChild(t);
                 c.onclick = () => { plLook = (plLook && plLook.handle === o.handle) ? null : o; plLookPintar(); };
                 list.appendChild(c);
             });
             const sub = document.getElementById('mc-look-sub');
-            if (sub) sub.textContent = plLook ? ('Vamos provar junto: ' + plLook.nome) : 'Escolha uma e prove as duas juntas (opcional)';
+            if (sub) sub.textContent = plLook ? ('Vamos provar junto: ' + edTitulo(plLook.nome)) : 'Escolha uma e prove as duas juntas';
+            const gb = document.getElementById('mc-btn-generate'); if (gb) gb.textContent = plLook ? 'Ver o look no meu corpo' : 'Ver no meu corpo';
         }
         async function plLookRender() {
             const chave = location.pathname;
             if (plLookTam !== chave) { plLookTam = chave; plLook = null; plLookOps = []; try { plLookOps = await plLookCarregar(); } catch (_) { plLookOps = []; } }
             plLookPintar();
+            // Foto da sugestão na mesma cor da peça da página (é a cor que a prova vai vestir)
+            try {
+                const v1 = await selectedVariantData(); const cor = String((v1 && v1.color) || '').toLowerCase();
+                if (!cor) return;
+                let mudou = false;
+                await Promise.all(plLookOps.map(async o => {
+                    if (o._cor === cor) return;
+                    const pj = await fetch('/products/' + o.handle + '.js').then(r => r.json());
+                    const i = (pj.options || []).findIndex(x => /cor|color/i.test(x.name || x));
+                    const v = i >= 0 && (pj.variants || []).find(x => String(x['option' + (i + 1)] || '').toLowerCase() === cor && x.featured_image);
+                    if (v) { o.img = v.featured_image.src; o._cor = cor; mudou = true; }
+                }));
+                if (mudou) plLookPintar();
+            } catch (_) {}
+        }
+
+        // ── Layout Editorial (30/10/2026): peça no topo, gerando com as peças, look no resultado ──
+        let edImg1 = '';
+        async function edPreencher() {
+            try {
+                const nm = ((document.querySelector('h1.product-name, h1.product__title, .product-single__title, h1') || {}).innerText || '').trim();
+                document.getElementById('ed-prod-nome').textContent = edTitulo(nm);
+                let cor = '';
+                edImg1 = '';
+                try { const v = await selectedVariantData(); if (v) { edImg1 = v.image || ''; cor = v.color || ''; } } catch (_) {}
+                if (!edImg1) { const og = document.querySelector('meta[property="og:image"]'); edImg1 = og ? og.content : ''; }
+                const im = document.getElementById('ed-prod-img');
+                if (edImg1) { im.src = plImgUrl(edImg1, 200); im.style.display = ''; } else im.style.display = 'none';
+                document.getElementById('ed-prod-sub').textContent = (cor ? edTitulo(cor) + ' · ' : '') + 'você está provando';
+            } catch (_) {}
+        }
+        function edLoading() {
+            try {
+                const duo = document.getElementById('ed-duo'), i1 = document.getElementById('ed-duo-1'), i2 = document.getElementById('ed-duo-2');
+                const nome1 = document.getElementById('ed-prod-nome').textContent;
+                if (edImg1) i1.src = plImgUrl(edImg1, 700);
+                if (plLook) {
+                    i2.src = plImgUrl(plLook.img, 700); i2.style.display = ''; duo.classList.remove('solo');
+                    document.getElementById('ed-load-tit').textContent = 'Vestindo as 2 peças em você';
+                    document.getElementById('ed-load-sub').textContent = nome1 + ' + ' + edTitulo(plLook.nome);
+                } else {
+                    i2.style.display = 'none'; duo.classList.add('solo');
+                    document.getElementById('ed-load-tit').textContent = 'Vestindo a peça em você';
+                    document.getElementById('ed-load-sub').textContent = nome1;
+                }
+            } catch (_) {}
+        }
+        // Monta as linhas do look (peça + cor + preço + tamanho). Sem peça 2: some e fica o preço normal.
+        async function edResultadoLook() {
+            const box = document.getElementById('ed-look'), pBox = document.getElementById('mc-result-product'), tro = document.getElementById('ed-trocar');
+            const buyBtn = document.getElementById('mc-btn-buy-result');
+            if (!box) return;
+            box.textContent = ''; box.style.display = 'none'; if (tro) tro.style.display = 'none';
+            if (buyBtn) buyBtn.textContent = 'Adicionar à sacola';
+            if (!plLook) return;
+            try {
+                if (!productJsonPromise) productJsonPromise = fetch(window.location.pathname + '.js', { credentials: 'same-origin' }).then(r => r.json());
+                const p1 = await productJsonPromise;
+                const p2 = await fetch('/products/' + plLook.handle + '.js').then(r => r.json());
+                const v1 = await selectedVariantData();
+                const cor = String((v1 && v1.color) || '').toLowerCase();
+                const optIdx = (p, re) => (p.options || []).findIndex(o => re.test(o.name || o));
+                const tamDe = (p, v) => { const i = optIdx(p, /tam|size/i); return i >= 0 ? v['option' + (i + 1)] : v.title; };
+                const corDe = (p, v) => { const i = optIdx(p, /cor|color/i); return i >= 0 ? v['option' + (i + 1)] : ''; };
+                const daCor = (p) => { const i = optIdx(p, /cor|color/i); const vs = p.variants || []; if (i < 0 || !cor) return vs; const f = vs.filter(v => String(v['option' + (i + 1)] || '').toLowerCase() === cor); return f.length ? f : vs; };
+                const vs1 = daCor(p1), vs2 = daCor(p2);
+                const sel1 = (v1 && vs1.find(v => String(v.id) === String(v1.id))) || vs1.find(v => v.available) || vs1[0];
+                const tam1 = sel1 ? tamDe(p1, sel1) : '';
+                const sel2 = vs2.find(v => v.available && tamDe(p2, v) === tam1) || vs2.find(v => v.available) || vs2[0];
+                const lbl = document.createElement('div'); lbl.className = 'ed-lbl'; lbl.textContent = 'Seu look'; box.appendChild(lbl);
+                const linha = (p, vs, sel, img) => {
+                    const row = document.createElement('div'); row.className = 'ed-item';
+                    const im = document.createElement('img'); im.src = plImgUrl((sel && sel.featured_image && sel.featured_image.src) || img || p.featured_image, 200); im.alt = '';
+                    const t = document.createElement('div'); t.className = 't';
+                    const b = document.createElement('b'); b.textContent = edTitulo(p.title);
+                    const s = document.createElement('small');
+                    const ss = document.createElement('select');
+                    vs.forEach(v => { const o = document.createElement('option'); o.value = v.id; o.textContent = 'Tam. ' + tamDe(p, v) + (v.available ? '' : ' (esgotado)'); o.disabled = !v.available; if (sel && v.id === sel.id) o.selected = true; ss.appendChild(o); });
+                    const info = () => { const v = vs.find(x => String(x.id) === ss.value) || sel; s.textContent = edTitulo(corDe(p, v)); };
+                    ss.onchange = info;
+                    info();
+                    t.appendChild(b); t.appendChild(s); row.appendChild(im); row.appendChild(t); row.appendChild(ss);
+                    box.appendChild(row);
+                    return row;
+                };
+                linha(p1, vs1, sel1, edImg1); linha(p2, vs2, sel2, plLook.img);
+                box.style.display = 'block';
+                if (pBox) pBox.style.display = 'none';
+                if (tro) tro.style.display = 'flex';
+                if (buyBtn) buyBtn.textContent = 'Adicionar o look à sacola';
+            } catch (e) { LOG.warn('Look no resultado indisponível: ' + e.message); box.textContent = ''; box.style.display = 'none'; }
         }
         const plBlobB64 = (b) => new Promise((res, rej) => { const r = new FileReader(); r.onloadend = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(b); });
 
@@ -1068,6 +1204,7 @@
 
             LOG.info('Modal aberto');
             populateResultProduct();
+            edPreencher();
             try { plLookRender(); } catch (_) {}
             modal.style.display = 'flex';
             lockBodyScroll();
@@ -1114,14 +1251,17 @@
                 window.location.href = '/cart';
                 return;
             }
+            const edSels = Array.from(document.querySelectorAll('#ed-look select'));
+            const edItens = (plLook && edSels.length === 2 && document.getElementById('ed-look').style.display !== 'none')
+                ? edSels.map(s => ({ id: Number(s.value), quantity: 1 })) : [{ id: Number(variantId), quantity: 1 }];
             const originalHtml = buyResultBtn.innerHTML;
             buyResultBtn.disabled = true;
-            buyResultBtn.innerHTML = '<i class="ph ph-circle-notch"></i> Adicionando...';
+            buyResultBtn.textContent = 'Adicionando...';
             try {
                 const response = await fetch('/cart/add.js', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({ items: [{ id: Number(variantId), quantity: 1 }] })
+                    body: JSON.stringify({ items: edItens })
                 });
                 if (!response.ok) throw new Error('Falha ao adicionar ao carrinho: ' + response.status);
                 window.location.href = '/cart';
@@ -1165,6 +1305,15 @@
             userPhoto = null;
             document.getElementById('mc-pre-view').style.display = 'none';
             checkFields();
+        };
+
+        const edTrocar = document.getElementById('ed-trocar');
+        if (edTrocar) edTrocar.onclick = () => {
+            document.getElementById('mc-step-result').style.display = 'none';
+            document.getElementById('mc-step-upload').style.display = 'block';
+            document.querySelector('.mc-card-ia').classList.remove('is-result');
+            checkFields();
+            const r = document.getElementById('mc-look-row'); if (r) setTimeout(() => r.scrollIntoView({ block: 'center' }), 50);
         };
 
         triggerUpload.onclick = () => { LOG.info('Abrindo seletor de arquivo...'); realInput.click(); };
@@ -1290,6 +1439,7 @@
                 return;
             }
             clearValidationHints();
+            edLoading();
             // Pula a etapa de confirmação e dispara o gerar diretamente
             if (confirmBtnYes) confirmBtnYes.click();
         };
@@ -1592,6 +1742,7 @@ const fd = new FormData();
                         }
 
                         await populateResultProduct();
+                        await edResultadoLook();
                         document.querySelector('.mc-card-ia').classList.add('is-result');
                         document.getElementById('mc-step-result').style.display = 'flex';
                         if (typeof _mcCheckProvasRestantes === 'function') _mcCheckProvasRestantes();

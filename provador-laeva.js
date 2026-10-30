@@ -652,6 +652,17 @@
                                 <img id="mc-pre-img" style="width:100%;height:100%;object-fit:contain;background:var(--mc-gray);">
                             </div>
                         </div>
+                        <!-- 30/10/2026: provar o LOOK COMPLETO (peça da página + a do "Complete seu look") -->
+                        <div id="mc-look-row" style="display:none;margin:16px 0 0;border:1px solid #111;padding:12px 14px;cursor:pointer;user-select:none;text-align:left;transition:opacity .2s;">
+                            <div style="display:flex;align-items:center;gap:12px;">
+                                <span id="mc-look-icon" style="font-size:20px;line-height:1;">&#9745;</span>
+                                <img id="mc-look-img" alt="" style="width:52px;height:52px;object-fit:cover;background:#f5f5f5;flex:none;">
+                                <div style="font-size:12px;line-height:1.45;color:#333;">
+                                    <b style="display:block;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#111;">Provar o look completo</b>
+                                    <span id="mc-look-nome"></span>
+                                </div>
+                            </div>
+                        </div>
                         <div id="mc-terms-row" style="display:block;margin:14px 0 0;font-size:13px;color:#444;text-align:center;line-height:1.6;cursor:pointer;opacity:0.6;user-select:none;">
                             <span id="mc-terms-icon" style="font-size:18px;vertical-align:middle;margin-right:6px;">&#9744;</span><span>Concordo com os <a href="https://provoulevou.com.br/termos.html" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="color:var(--mc-gold);text-decoration:underline;">Termos e Condi&#231;&#245;es</a></span>
                         </div>
@@ -857,6 +868,35 @@
             }, 150);
         }).observe(document.body, { childList: true, subtree: true });
 
+        // ── Look completo (30/10/2026) ─────────────────────────────────────────────
+        // Lê o bloco "Complete seu look" do tema. Com a opção marcada, a prova veste as 2 peças.
+        let plLook = null, plLookOn = true;
+        function plLookDetect() {
+            const it = document.querySelector('.complete-the-look__item');
+            if (!it) return null;
+            const a = it.querySelector('a[href*="/products/"]');
+            if (!a) return null;
+            const img = it.querySelector('img');
+            const nome = ((it.querySelector('.complete-the-look__title') || a).textContent || '').trim();
+            const vEl = it.querySelector('[data-variant-id]');
+            return { handle: a.getAttribute('href').split('/products/')[1].split(/[?#/]/)[0], nome: nome,
+                     img: img ? (img.currentSrc || img.src) : '', vid: vEl ? vEl.getAttribute('data-variant-id') : '' };
+        }
+        function plLookRender() {
+            const row = document.getElementById('mc-look-row');
+            if (!row) return;
+            plLook = plLookDetect();
+            if (!plLook) { row.style.display = 'none'; return; }
+            row.style.display = 'block';
+            document.getElementById('mc-look-img').src = plLook.img || '';
+            const atual = ((document.querySelector('h1.product-name, h1.product__title, .product-single__title, h1') || {}).innerText || '').trim();
+            document.getElementById('mc-look-nome').textContent = (atual ? atual + ' + ' : '') + plLook.nome;
+            document.getElementById('mc-look-icon').innerHTML = plLookOn ? '&#9745;' : '&#9744;';
+            row.style.opacity = plLookOn ? '1' : '0.55';
+        }
+        try { document.getElementById('mc-look-row').onclick = function () { plLookOn = !plLookOn; plLookRender(); }; } catch (_) {}
+        const plBlobB64 = (b) => new Promise((res, rej) => { const r = new FileReader(); r.onloadend = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(b); });
+
         const modal = document.getElementById('mc-modal-ia');
         const genBtn = document.getElementById('mc-btn-generate');
         const confirmStep = document.getElementById('mc-step-confirm');
@@ -1004,6 +1044,7 @@
 
             LOG.info('Modal aberto');
             populateResultProduct();
+            try { plLookRender(); } catch (_) {}
             modal.style.display = 'flex';
             lockBodyScroll();
         }
@@ -1443,6 +1484,31 @@ const fd = new FormData();
                         }
                     } else {
                         LOG.warn('Imagem do produto não encontrada no DOM — enviando sem ela');
+                    }
+
+                    // Look completo: manda a peça do "Complete seu look" como peça 2 (só a foto da cor mostrada no bloco)
+                    if (plLook && plLookOn && prodImg) {
+                        try {
+                            const pj = await fetch('/products/' + plLook.handle + '.js').then(r => r.json());
+                            const v = (pj.variants || []).find(x => String(x.id) === String(plLook.vid));
+                            const chave = u => String(u || '').split('?')[0].replace(/^https?:/, '').replace(/^\/\//, '');
+                            const urls = [];
+                            [v && v.featured_image && v.featured_image.src, plLook.img].forEach(u => { if (u && !urls.some(x => chave(x) === chave(u))) urls.push(u); });
+                            if (!urls.length && pj.images && pj.images[0]) urls.push(pj.images[0]);
+                            const b64s = [];
+                            for (const u0 of urls.slice(0, 2)) {
+                                let u = u0.indexOf('//') === 0 ? 'https:' + u0 : u0;
+                                try { const _u = new URL(u, location.href); _u.searchParams.set('width', '1200'); u = _u.href; } catch (_) {}
+                                const b = await fetch(u).then(r => r.blob());
+                                if (b && /^image\//.test(b.type)) b64s.push(await plBlobB64(b));
+                            }
+                            if (b64s.length) {
+                                b64s.forEach((x, i) => fd.append('product_image_' + (i + 2) + '_b64', x));
+                                fd.append('kit_json', JSON.stringify([{ nome: prodName.trim(), imgs: 1 }, { nome: plLook.nome, imgs: b64s.length }]));
+                                fd.set('product_name', prodName.trim() + ' + ' + plLook.nome);
+                                LOG.ok('Look completo: + ' + plLook.nome + ' (' + b64s.length + ' foto)');
+                            }
+                        } catch (lookErr) { LOG.warn('Look completo indisponível, prova só a peça: ' + lookErr.message); }
                     }
 
                     calculateFinalSize();

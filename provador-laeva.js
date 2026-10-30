@@ -652,16 +652,11 @@
                                 <img id="mc-pre-img" style="width:100%;height:100%;object-fit:contain;background:var(--mc-gray);">
                             </div>
                         </div>
-                        <!-- 30/10/2026: provar o LOOK COMPLETO (peça da página + a do "Complete seu look") -->
-                        <div id="mc-look-row" style="display:none;margin:16px 0 0;border:1px solid #111;padding:12px 14px;cursor:pointer;user-select:none;text-align:left;transition:opacity .2s;">
-                            <div style="display:flex;align-items:center;gap:12px;">
-                                <span id="mc-look-icon" style="font-size:20px;line-height:1;">&#9745;</span>
-                                <img id="mc-look-img" alt="" style="width:52px;height:52px;object-fit:cover;background:#f5f5f5;flex:none;">
-                                <div style="font-size:12px;line-height:1.45;color:#333;">
-                                    <b style="display:block;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#111;">Provar o look completo</b>
-                                    <span id="mc-look-nome"></span>
-                                </div>
-                            </div>
+                        <!-- 30/10/2026: COMBINE COM OUTRA PEÇA (look completo: a peça da página + 1 sugestão escolhida) -->
+                        <div id="mc-look-row" style="display:none;margin:18px 0 0;text-align:left;">
+                            <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#111;">Combine com outra peça</div>
+                            <div id="mc-look-sub" style="font-size:12px;color:#666;margin:4px 0 10px;">Escolha uma e prove as duas juntas (opcional)</div>
+                            <div id="mc-look-list" style="display:flex;gap:10px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none;"></div>
                         </div>
                         <div id="mc-terms-row" style="display:block;margin:14px 0 0;font-size:13px;color:#444;text-align:center;line-height:1.6;cursor:pointer;opacity:0.6;user-select:none;">
                             <span id="mc-terms-icon" style="font-size:18px;vertical-align:middle;margin-right:6px;">&#9744;</span><span>Concordo com os <a href="https://provoulevou.com.br/termos.html" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="color:var(--mc-gold);text-decoration:underline;">Termos e Condi&#231;&#245;es</a></span>
@@ -868,33 +863,62 @@
             }, 150);
         }).observe(document.body, { childList: true, subtree: true });
 
-        // ── Look completo (30/10/2026) ─────────────────────────────────────────────
-        // Lê o bloco "Complete seu look" do tema. Com a opção marcada, a prova veste as 2 peças.
-        let plLook = null, plLookOn = true;
-        function plLookDetect() {
-            const it = document.querySelector('.complete-the-look__item');
-            if (!it) return null;
-            const a = it.querySelector('a[href*="/products/"]');
-            if (!a) return null;
-            const img = it.querySelector('img');
-            const nome = ((it.querySelector('.complete-the-look__title') || a).textContent || '').trim();
-            const vEl = it.querySelector('[data-variant-id]');
-            return { handle: a.getAttribute('href').split('/products/')[1].split(/[?#/]/)[0], nome: nome,
-                     img: img ? (img.currentSrc || img.src) : '', vid: vEl ? vEl.getAttribute('data-variant-id') : '' };
-        }
-        function plLookRender() {
-            const row = document.getElementById('mc-look-row');
-            if (!row) return;
-            plLook = plLookDetect();
-            if (!plLook) { row.style.display = 'none'; return; }
-            row.style.display = 'block';
-            document.getElementById('mc-look-img').src = plLook.img || '';
+        // ── Combine com outra peça (30/10/2026) ───────────────────────────────────
+        // Sugestões: bloco "Complete seu look" do tema + recomendações da Shopify, só do lado
+        // oposto do corpo (top -> partes de baixo; legging/flare/short -> partes de cima). A cliente
+        // escolhe uma (ou nenhuma); com uma escolhida, a prova veste as duas peças.
+        let plLook = null, plLookOps = [], plLookTam = '';
+        const plParte = (nome) => { const n = String(nome || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+            if (/vestido|macac(a|o)|macaquinho|body\b|jardineira/.test(n)) return 'inteira';
+            if (/\b(calca|saia|short|shorts|bermuda|legging|ciclista|jogger|pantalona|flare|bike)\b/.test(n)) return 'baixo';
+            return 'cima'; };
+        const plImgUrl = (u) => { u = String(u || ''); if (u.indexOf('//') === 0) u = 'https:' + u; try { const x = new URL(u, location.href); x.searchParams.set('width', '300'); return x.href; } catch (_) { return u; } };
+        async function plLookCarregar() {
             const atual = ((document.querySelector('h1.product-name, h1.product__title, .product-single__title, h1') || {}).innerText || '').trim();
-            document.getElementById('mc-look-nome').textContent = (atual ? atual + ' + ' : '') + plLook.nome;
-            document.getElementById('mc-look-icon').innerHTML = plLookOn ? '&#9745;' : '&#9744;';
-            row.style.opacity = plLookOn ? '1' : '0.55';
+            const lado = plParte(atual);
+            const ops = [], vistos = {};
+            const add = (o) => { if (!o || !o.handle || vistos[o.handle] || location.pathname.indexOf('/products/' + o.handle) >= 0) return; if (lado === 'inteira' || plParte(o.nome) === lado || plParte(o.nome) === 'inteira') return; vistos[o.handle] = 1; ops.push(o); };
+            document.querySelectorAll('.complete-the-look__item').forEach(it => {
+                const a = it.querySelector('a[href*="/products/"]'); if (!a) return;
+                const img = it.querySelector('img'); const vEl = it.querySelector('[data-variant-id]');
+                add({ handle: a.getAttribute('href').split('/products/')[1].split(/[?#/]/)[0], nome: ((it.querySelector('.complete-the-look__title') || a).textContent || '').trim(), img: img ? (img.currentSrc || img.src) : '', vid: vEl ? vEl.getAttribute('data-variant-id') : '' });
+            });
+            try {
+                const pid = (window.ShopifyAnalytics && ShopifyAnalytics.meta && ShopifyAnalytics.meta.product && ShopifyAnalytics.meta.product.id) || (window.meta && window.meta.product && window.meta.product.id);
+                if (pid && ops.length < 4) {
+                    const rj = await fetch('/recommendations/products.json?product_id=' + pid + '&limit=10').then(r => r.json());
+                    (rj.products || []).forEach(p => { if (ops.length < 4 && p.available !== false) add({ handle: p.handle, nome: p.title, img: p.featured_image || '', vid: '' }); });
+                }
+            } catch (_) {}
+            return ops.slice(0, 4);
         }
-        try { document.getElementById('mc-look-row').onclick = function () { plLookOn = !plLookOn; plLookRender(); }; } catch (_) {}
+        function plLookPintar() {
+            const row = document.getElementById('mc-look-row'), list = document.getElementById('mc-look-list');
+            if (!row || !list) return;
+            if (!plLookOps.length) { row.style.display = 'none'; return; }
+            row.style.display = 'block';
+            list.textContent = '';
+            plLookOps.forEach(o => {
+                const sel = plLook && plLook.handle === o.handle;
+                const c = document.createElement('div');
+                c.style.cssText = 'flex:0 0 96px;cursor:pointer;user-select:none;position:relative;border:' + (sel ? '2px solid #111' : '1px solid #ddd') + ';padding:' + (sel ? '3px' : '4px') + ';background:#fff;';
+                const im = document.createElement('img'); im.src = plImgUrl(o.img); im.alt = o.nome;
+                im.style.cssText = 'display:block;width:100%;height:110px;object-fit:cover;background:#f5f5f5;';
+                const t = document.createElement('div'); t.textContent = o.nome;
+                t.style.cssText = 'font-size:10px;line-height:1.3;color:#111;margin-top:5px;height:26px;overflow:hidden;text-transform:uppercase;letter-spacing:.3px;';
+                c.appendChild(im); c.appendChild(t);
+                if (sel) { const ck = document.createElement('div'); ck.innerHTML = '&#10003;'; ck.style.cssText = 'position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:#111;color:#fff;font-size:12px;line-height:20px;text-align:center;'; c.appendChild(ck); }
+                c.onclick = () => { plLook = (plLook && plLook.handle === o.handle) ? null : o; plLookPintar(); };
+                list.appendChild(c);
+            });
+            const sub = document.getElementById('mc-look-sub');
+            if (sub) sub.textContent = plLook ? ('Vamos provar junto: ' + plLook.nome) : 'Escolha uma e prove as duas juntas (opcional)';
+        }
+        async function plLookRender() {
+            const chave = location.pathname;
+            if (plLookTam !== chave) { plLookTam = chave; plLook = null; plLookOps = []; try { plLookOps = await plLookCarregar(); } catch (_) { plLookOps = []; } }
+            plLookPintar();
+        }
         const plBlobB64 = (b) => new Promise((res, rej) => { const r = new FileReader(); r.onloadend = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(b); });
 
         const modal = document.getElementById('mc-modal-ia');
@@ -1487,7 +1511,7 @@ const fd = new FormData();
                     }
 
                     // Look completo: manda a peça do "Complete seu look" como peça 2 (só a foto da cor mostrada no bloco)
-                    if (plLook && plLookOn && prodImg) {
+                    if (plLook && prodImg) {
                         try {
                             const pj = await fetch('/products/' + plLook.handle + '.js').then(r => r.json());
                             // Mesma cor da peça 1 (cropped Black -> legging Black). Uma foto só: misturar cores confunde a IA.

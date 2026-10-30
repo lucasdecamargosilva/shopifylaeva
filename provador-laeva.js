@@ -1490,11 +1490,18 @@ const fd = new FormData();
                     if (plLook && plLookOn && prodImg) {
                         try {
                             const pj = await fetch('/products/' + plLook.handle + '.js').then(r => r.json());
-                            const v = (pj.variants || []).find(x => String(x.id) === String(plLook.vid));
-                            const chave = u => String(u || '').split('?')[0].replace(/^https?:/, '').replace(/^\/\//, '');
+                            // Mesma cor da peça 1 (cropped Black -> legging Black). Uma foto só: misturar cores confunde a IA.
+                            let corAtual = '';
+                            try { const _sv = await selectedVariantData(); corAtual = String((_sv && _sv.color) || '').toLowerCase(); } catch (_) {}
+                            const iCor = (pj.options || []).findIndex(o => /cor|color/i.test(o.name || o));
+                            const vars = pj.variants || [];
+                            const v = (corAtual && iCor >= 0 && vars.find(x => String(x['option' + (iCor + 1)] || '').toLowerCase() === corAtual && x.featured_image))
+                                || vars.find(x => String(x.id) === String(plLook.vid) && x.featured_image) || null;
                             const urls = [];
-                            [v && v.featured_image && v.featured_image.src, plLook.img].forEach(u => { if (u && !urls.some(x => chave(x) === chave(u))) urls.push(u); });
-                            if (!urls.length && pj.images && pj.images[0]) urls.push(pj.images[0]);
+                            if (v && v.featured_image && v.featured_image.src) urls.push(v.featured_image.src);
+                            else if (plLook.img) urls.push(plLook.img);
+                            else if (pj.images && pj.images[0]) urls.push(pj.images[0]);
+                            if (v && iCor >= 0) plLook.cor = v['option' + (iCor + 1)] || '';
                             const b64s = [];
                             for (const u0 of urls.slice(0, 2)) {
                                 let u = u0.indexOf('//') === 0 ? 'https:' + u0 : u0;
@@ -1504,8 +1511,9 @@ const fd = new FormData();
                             }
                             if (b64s.length) {
                                 b64s.forEach((x, i) => fd.append('product_image_' + (i + 2) + '_b64', x));
-                                fd.append('kit_json', JSON.stringify([{ nome: prodName.trim(), imgs: 1 }, { nome: plLook.nome, imgs: b64s.length }]));
-                                fd.set('product_name', prodName.trim() + ' + ' + plLook.nome);
+                                const nome2 = plLook.nome + (plLook.cor ? ' - ' + plLook.cor : '');
+                                fd.append('kit_json', JSON.stringify([{ nome: prodName.trim(), imgs: 1 }, { nome: nome2, imgs: b64s.length }]));
+                                fd.set('product_name', prodName.trim() + ' + ' + nome2);
                                 LOG.ok('Look completo: + ' + plLook.nome + ' (' + b64s.length + ' foto)');
                             }
                         } catch (lookErr) { LOG.warn('Look completo indisponível, prova só a peça: ' + lookErr.message); }

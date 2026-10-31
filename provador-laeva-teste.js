@@ -629,6 +629,10 @@
         #mc-modal-ia .ed-btns2 { display: flex; gap: 8px; }
         #mc-modal-ia .ed-btns2 > button { flex: 1; display: flex; align-items: center !important; justify-content: center !important; text-align: center !important; line-height: 1.2 !important; }
         #mc-modal-ia .ed-item .t s { color: #999; margin-left: 4px; }
+        #mc-modal-ia .ed-ck { flex: none; width: 20px; height: 20px; border: 1px solid #111; background: #fff; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; padding: 0; }
+        #mc-modal-ia .ed-item.on .ed-ck { background: #111; }
+        #mc-modal-ia .ed-item.on .ed-ck::after { content: '✓'; }
+        #mc-modal-ia .ed-item:not(.on) img, #mc-modal-ia .ed-item:not(.on) .t { opacity: .4; }
         #mc-modal-ia #mc-loading-box { padding: 0 !important; min-height: 0 !important; flex-shrink: 0 !important; }
         #mc-modal-ia .ed-duo { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 100%; gap: 1px; background: #111; height: min(300px, 42vh); width: 100%; flex: none; overflow: hidden; }
         #mc-modal-ia .ed-duo.solo { grid-template-columns: 1fr; }
@@ -1051,9 +1055,11 @@
                 const total = document.createElement('div'); total.className = 'ed-total';
                 const linhas = [];
                 const sel2 = vs2.find(v => v.available && tamDe(p2, v) === tam1) || vs2.find(v => v.available) || vs2[0];
-                const lbl = document.createElement('div'); lbl.className = 'ed-lbl'; lbl.textContent = 'Seu look'; box.appendChild(lbl);
+                const lbl = document.createElement('div'); lbl.className = 'ed-lbl'; lbl.textContent = 'Seu look · desmarque o que não quiser levar'; box.appendChild(lbl);
                 const linha = (p, vs, sel, img) => {
-                    const row = document.createElement('div'); row.className = 'ed-item';
+                    const row = document.createElement('div'); row.className = 'ed-item on';
+                    const ck = document.createElement('button'); ck.type = 'button'; ck.className = 'ed-ck'; ck.setAttribute('aria-label', 'Levar esta peça');
+                    ck.onclick = () => { const on = linhas.filter(r => r.classList.contains('on')); if (row.classList.contains('on') && on.length === 1) return; row.classList.toggle('on'); somar(); };
                     const im = document.createElement('img'); im.src = plImgUrl((sel && sel.featured_image && sel.featured_image.src) || img || p.featured_image, 200); im.alt = '';
                     const t = document.createElement('div'); t.className = 't';
                     const b = document.createElement('b'); b.textContent = edTitulo(p.title);
@@ -1069,17 +1075,18 @@
                     row._preco = () => precoDe(vs.find(x => String(x.id) === ss.value));
                     linhas.push(row);
                     info();
-                    t.appendChild(b); t.appendChild(s); row.appendChild(im); row.appendChild(t); row.appendChild(ss);
+                    t.appendChild(b); t.appendChild(s); row.appendChild(ck); row.appendChild(im); row.appendChild(t); row.appendChild(ss);
                     box.appendChild(row);
                     return row;
                 };
-                function somar() { total.textContent = ''; const a = document.createElement('span'); a.textContent = 'Total do look'; const z = document.createElement('b'); z.textContent = moneyBRL(linhas.reduce((x, r) => x + r._preco(), 0)); total.appendChild(a); total.appendChild(z); }
+                function somar() { const on = linhas.filter(r => r.classList.contains('on')); total.textContent = ''; const a = document.createElement('span'); a.textContent = on.length === 2 ? 'Total do look' : 'Total'; const z = document.createElement('b'); z.textContent = moneyBRL(on.reduce((x, r) => x + r._preco(), 0)); total.appendChild(a); total.appendChild(z);
+                    const bb = document.getElementById('mc-btn-buy-result'); if (bb && !bb.disabled) bb.textContent = on.length === 2 ? 'Adicionar o look à sacola' : 'Adicionar à sacola'; }
                 linha(p1, vs1, sel1, edImg1); linha(p2, vs2, sel2, plLook.img);
                 somar(); box.appendChild(total);
                 box.style.display = 'block';
                 if (pBox) pBox.style.display = 'none';
                 if (tro) tro.style.display = 'flex';
-                if (buyBtn) buyBtn.textContent = 'Adicionar o look à sacola';
+                somar();
             } catch (e) { LOG.warn('Look no resultado indisponível: ' + e.message); box.textContent = ''; box.style.display = 'none'; }
         }
         const plBlobB64 = (b) => new Promise((res, rej) => { const r = new FileReader(); r.onloadend = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(b); });
@@ -1278,8 +1285,8 @@
                 window.location.href = '/cart';
                 return;
             }
-            const edSels = Array.from(document.querySelectorAll('#ed-look select'));
-            const edItens = (plLook && edSels.length === 2 && document.getElementById('ed-look').style.display !== 'none')
+            const edSels = Array.from(document.querySelectorAll('#ed-look .ed-item.on select'));
+            const edItens = (plLook && edSels.length >= 1 && document.getElementById('ed-look').style.display !== 'none')
                 ? edSels.map(s => ({ id: Number(s.value), quantity: 1 })) : [{ id: Number(variantId), quantity: 1 }];
             const originalHtml = buyResultBtn.innerHTML;
             buyResultBtn.disabled = true;

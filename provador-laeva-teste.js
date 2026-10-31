@@ -646,7 +646,7 @@
         #mc-modal-ia .ed-item .t { flex: 1; min-width: 0; }
         #mc-modal-ia .ed-item b { display: block; font-size: 12.5px; font-weight: 500; color: #111; }
         #mc-modal-ia .ed-item small { font-size: 11.5px; color: #666; }
-        #mc-modal-ia .ed-item select { font: 400 12px 'Inter Tight', sans-serif; border: 1px solid #111; border-radius: 0; padding: 6px 8px; background: #fff; color: #111; }
+        #mc-modal-ia .ed-item select { width: 96px; flex: none; font: 400 12px 'Inter Tight', sans-serif; border: 1px solid #111; border-radius: 0; padding: 6px 8px; background: #fff; color: #111; }
         #mc-modal-ia .ed-total { display: flex; justify-content: space-between; font-size: 13px; padding: 10px 0 2px; color: #111; }
         #mc-modal-ia .ed-total b { font-weight: 600; }
         #mc-modal-ia .mc-powered-footer { background: #fff !important; border-top: 1px solid #eee !important; }
@@ -918,6 +918,9 @@
             if (/\b(calca|saia|short|shorts|bermuda|legging|ciclista|jogger|pantalona|flare|bike)\b/.test(n)) return 'baixo';
             return 'cima'; };
         const plImgUrl = (u, w) => { u = String(u || ''); if (u.indexOf('//') === 0) u = 'https:' + u; try { const x = new URL(u, location.href); x.searchParams.set('width', String(w || 300)); return x.href; } catch (_) { return u; } };
+        const plCorKey = (c) => { const n = String(c || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+            const m = { black: 'preto', preta: 'preto', white: 'branco', branca: 'branco', offwhite: 'off white', 'off-white': 'off white', nude: 'bege', beige: 'bege', grey: 'cinza', gray: 'cinza', blue: 'azul', green: 'verde', pink: 'rosa', red: 'vermelho', vermelha: 'vermelho', brown: 'marrom', lilac: 'lilas', purple: 'roxo', roxa: 'roxo' };
+            return m[n] || n; };
         const edTitulo = (s) => String(s || '').trim().toLowerCase().replace(/(^|[\s\-])(\S)/g, (m, a, b) => a + b.toUpperCase());
         async function plLookCarregar() {
             const atual = ((document.querySelector('h1.product-name, h1.product__title, .product-single__title, h1') || {}).innerText || '').trim();
@@ -966,14 +969,14 @@
             plLookPintar();
             // Foto da sugestão na mesma cor da peça da página (é a cor que a prova vai vestir)
             try {
-                const v1 = await selectedVariantData(); const cor = String((v1 && v1.color) || '').toLowerCase();
+                const v1 = await selectedVariantData(); const cor = plCorKey(v1 && v1.color);
                 if (!cor) return;
                 let mudou = false;
                 await Promise.all(plLookOps.map(async o => {
                     if (o._cor === cor) return;
                     const pj = await fetch('/products/' + o.handle + '.js').then(r => r.json());
                     const i = (pj.options || []).findIndex(x => /cor|color/i.test(x.name || x));
-                    const v = i >= 0 && (pj.variants || []).find(x => String(x['option' + (i + 1)] || '').toLowerCase() === cor && x.featured_image);
+                    const v = i >= 0 && (pj.variants || []).find(x => plCorKey(x['option' + (i + 1)]) === cor && x.featured_image);
                     if (v) { o.img = v.featured_image.src; o._cor = cor; mudou = true; }
                 }));
                 if (mudou) plLookPintar();
@@ -1024,12 +1027,16 @@
                 const p1 = await productJsonPromise;
                 const p2 = await fetch('/products/' + plLook.handle + '.js').then(r => r.json());
                 const v1 = await selectedVariantData();
-                const cor = String((v1 && v1.color) || '').toLowerCase();
+                const cor = plCorKey(v1 && v1.color);
                 const optIdx = (p, re) => (p.options || []).findIndex(o => re.test(o.name || o));
                 const tamDe = (p, v) => { const i = optIdx(p, /tam|size/i); return i >= 0 ? v['option' + (i + 1)] : v.title; };
                 const corDe = (p, v) => { const i = optIdx(p, /cor|color/i); return i >= 0 ? v['option' + (i + 1)] : ''; };
-                const daCor = (p) => { const i = optIdx(p, /cor|color/i); const vs = p.variants || []; if (i < 0 || !cor) return vs; const f = vs.filter(v => String(v['option' + (i + 1)] || '').toLowerCase() === cor); return f.length ? f : vs; };
-                const vs1 = daCor(p1), vs2 = daCor(p2);
+                const daCor = (p, vidPref) => { const i = optIdx(p, /cor|color/i); const vs = p.variants || []; if (i < 0) return vs;
+                    const k = (v) => plCorKey(v['option' + (i + 1)]);
+                    let f = cor ? vs.filter(v => k(v) === cor) : [];
+                    if (!f.length) { const ref = vs.find(v => String(v.id) === String(vidPref)) || vs.find(v => v.available) || vs[0]; f = ref ? vs.filter(v => k(v) === k(ref)) : vs; }
+                    return f.length ? f : vs; };
+                const vs1 = daCor(p1), vs2 = daCor(p2, plLook.vid);
                 // A loja mostra o preço com desconto aplicado por um app (Black: -20%), não o da Shopify.
                 // Usa o mesmo fator da peça da página nas duas peças, para bater com o que a cliente vê.
                 const _pt = ((document.querySelector('product-price .price') || document.querySelector('product-price') || {}).innerText || '');
@@ -1052,7 +1059,7 @@
                     const b = document.createElement('b'); b.textContent = edTitulo(p.title);
                     const s = document.createElement('small');
                     const ss = document.createElement('select');
-                    vs.forEach(v => { const o = document.createElement('option'); o.value = v.id; o.textContent = 'Tam. ' + tamDe(p, v) + (v.available ? '' : ' (esgotado)'); o.disabled = !v.available; if (sel && v.id === sel.id) o.selected = true; ss.appendChild(o); });
+                    vs.forEach(v => { const o = document.createElement('option'); o.value = v.id; o.textContent = tamDe(p, v) + (v.available ? '' : ' · esgotado'); o.disabled = !v.available; if (sel && v.id === sel.id) o.selected = true; ss.appendChild(o); });
                     const info = () => {
                         const v = vs.find(x => String(x.id) === ss.value) || sel;
                         s.textContent = [edTitulo(corDe(p, v)), v ? moneyBRL(precoDe(v)) : ''].filter(Boolean).join(' · ');
@@ -1694,10 +1701,10 @@ const fd = new FormData();
                             const pj = await fetch('/products/' + plLook.handle + '.js').then(r => r.json());
                             // Mesma cor da peça 1 (cropped Black -> legging Black). Uma foto só: misturar cores confunde a IA.
                             let corAtual = '';
-                            try { const _sv = await selectedVariantData(); corAtual = String((_sv && _sv.color) || '').toLowerCase(); } catch (_) {}
+                            try { const _sv = await selectedVariantData(); corAtual = plCorKey(_sv && _sv.color); } catch (_) {}
                             const iCor = (pj.options || []).findIndex(o => /cor|color/i.test(o.name || o));
                             const vars = pj.variants || [];
-                            const v = (corAtual && iCor >= 0 && vars.find(x => String(x['option' + (iCor + 1)] || '').toLowerCase() === corAtual && x.featured_image))
+                            const v = (corAtual && iCor >= 0 && vars.find(x => plCorKey(x['option' + (iCor + 1)]) === corAtual && x.featured_image))
                                 || vars.find(x => String(x.id) === String(plLook.vid) && x.featured_image) || null;
                             const urls = [];
                             if (v && v.featured_image && v.featured_image.src) urls.push(v.featured_image.src);

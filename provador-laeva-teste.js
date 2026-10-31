@@ -627,11 +627,12 @@
         #mc-modal-ia #mc-btn-generate { margin: 14px 0 18px !important; }
         #mc-modal-ia #mc-step-result .mc-btn-outline { border: 1px solid #111 !important; border-radius: 0 !important; font-family: 'Inter Tight', sans-serif !important; font-size: 11px !important; font-weight: 500 !important; letter-spacing: .16em !important; text-transform: uppercase !important; min-height: 46px !important; padding: 12px 10px !important; }
         #mc-modal-ia .ed-btns2 { display: flex; gap: 8px; }
-        #mc-modal-ia .ed-btns2 > button { flex: 1; }
-        #mc-modal-ia #mc-loading-box { padding: 0 !important; min-height: 0 !important; }
-        #mc-modal-ia .ed-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #111; height: 300px; width: 100%; }
+        #mc-modal-ia .ed-btns2 > button { flex: 1; display: flex; align-items: center !important; justify-content: center !important; text-align: center !important; line-height: 1.2 !important; }
+        #mc-modal-ia .ed-item .t s { color: #999; margin-left: 4px; }
+        #mc-modal-ia #mc-loading-box { padding: 0 !important; min-height: 0 !important; flex-shrink: 0 !important; }
+        #mc-modal-ia .ed-duo { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 100%; gap: 1px; background: #111; height: min(300px, 42vh); width: 100%; flex: none; overflow: hidden; }
         #mc-modal-ia .ed-duo.solo { grid-template-columns: 1fr; }
-        #mc-modal-ia .ed-duo img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.05); background: #f3f3f3; }
+        #mc-modal-ia .ed-duo img { display: block; min-height: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; filter: grayscale(1) contrast(1.05); background: #f3f3f3; }
         #mc-modal-ia .ed-load-tx { padding: 20px 24px 24px; text-align: left; width: 100%; box-sizing: border-box; }
         #mc-modal-ia .ed-load-tx b { display: block; font-size: 15px; font-weight: 500; text-transform: uppercase; letter-spacing: .04em; color: #111; }
         #mc-modal-ia .ed-load-tx small { display: block; font-size: 12px; color: #777; margin-top: 3px; }
@@ -1029,8 +1030,19 @@
                 const corDe = (p, v) => { const i = optIdx(p, /cor|color/i); return i >= 0 ? v['option' + (i + 1)] : ''; };
                 const daCor = (p) => { const i = optIdx(p, /cor|color/i); const vs = p.variants || []; if (i < 0 || !cor) return vs; const f = vs.filter(v => String(v['option' + (i + 1)] || '').toLowerCase() === cor); return f.length ? f : vs; };
                 const vs1 = daCor(p1), vs2 = daCor(p2);
-                const sel1 = (v1 && vs1.find(v => String(v.id) === String(v1.id))) || vs1.find(v => v.available) || vs1[0];
+                // A loja mostra o preço com desconto aplicado por um app (Black: -20%), não o da Shopify.
+                // Usa o mesmo fator da peça da página nas duas peças, para bater com o que a cliente vê.
+                const _pt = ((document.querySelector('product-price .price') || document.querySelector('product-price') || {}).innerText || '');
+                const _pm = _pt.match(/R\$\s*([\d.]+,\d{2})/);
+                const _pag = _pm ? Math.round(Number(_pm[1].replace(/\./g, '').replace(',', '.')) * 100) : 0;
+                const _v1 = v1 && vs1.find(v => String(v.id) === String(v1.id));
+                const sel1 = (_v1 && _v1.available ? _v1 : null) || vs1.find(v => v.available) || vs1[0];   // nunca começa num tamanho esgotado
                 const tam1 = sel1 ? tamDe(p1, sel1) : '';
+                const _b1 = sel1 ? Number(sel1.price) : 0;
+                const fator = (_pag && _b1 && _pag < _b1 && _pag / _b1 > 0.3) ? _pag / _b1 : 1;
+                const precoDe = (v) => v ? Math.round(Number(v.price) * fator) : 0;
+                const total = document.createElement('div'); total.className = 'ed-total';
+                const linhas = [];
                 const sel2 = vs2.find(v => v.available && tamDe(p2, v) === tam1) || vs2.find(v => v.available) || vs2[0];
                 const lbl = document.createElement('div'); lbl.className = 'ed-lbl'; lbl.textContent = 'Seu look'; box.appendChild(lbl);
                 const linha = (p, vs, sel, img) => {
@@ -1041,14 +1053,22 @@
                     const s = document.createElement('small');
                     const ss = document.createElement('select');
                     vs.forEach(v => { const o = document.createElement('option'); o.value = v.id; o.textContent = 'Tam. ' + tamDe(p, v) + (v.available ? '' : ' (esgotado)'); o.disabled = !v.available; if (sel && v.id === sel.id) o.selected = true; ss.appendChild(o); });
-                    const info = () => { const v = vs.find(x => String(x.id) === ss.value) || sel; s.textContent = edTitulo(corDe(p, v)); };
-                    ss.onchange = info;
+                    const info = () => {
+                        const v = vs.find(x => String(x.id) === ss.value) || sel;
+                        s.textContent = [edTitulo(corDe(p, v)), v ? moneyBRL(precoDe(v)) : ''].filter(Boolean).join(' · ');
+                        if (v && fator < 1) { const o = document.createElement('s'); o.textContent = moneyBRL(v.price); s.appendChild(o); }
+                    };
+                    ss.onchange = () => { info(); somar(); };
+                    row._preco = () => precoDe(vs.find(x => String(x.id) === ss.value));
+                    linhas.push(row);
                     info();
                     t.appendChild(b); t.appendChild(s); row.appendChild(im); row.appendChild(t); row.appendChild(ss);
                     box.appendChild(row);
                     return row;
                 };
+                function somar() { total.textContent = ''; const a = document.createElement('span'); a.textContent = 'Total do look'; const z = document.createElement('b'); z.textContent = moneyBRL(linhas.reduce((x, r) => x + r._preco(), 0)); total.appendChild(a); total.appendChild(z); }
                 linha(p1, vs1, sel1, edImg1); linha(p2, vs2, sel2, plLook.img);
+                somar(); box.appendChild(total);
                 box.style.display = 'block';
                 if (pBox) pBox.style.display = 'none';
                 if (tro) tro.style.display = 'flex';
@@ -1263,7 +1283,15 @@
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     body: JSON.stringify({ items: edItens })
                 });
-                if (!response.ok) throw new Error('Falha ao adicionar ao carrinho: ' + response.status);
+                if (!response.ok) {
+                    let _msg = '';
+                    try { const _j = await response.json(); _msg = String(_j.description || _j.message || ''); } catch (_) {}
+                    LOG.warn('Carrinho recusou: ' + response.status + ' ' + _msg);
+                    buyResultBtn.disabled = false;
+                    buyResultBtn.textContent = /estoque|stock|esgot|sold out|available|dispon/i.test(_msg) || response.status === 422 ? 'Tamanho esgotado: escolha outro' : 'Não deu certo, tente de novo';
+                    setTimeout(() => { buyResultBtn.innerHTML = originalHtml; }, 3500);
+                    return;
+                }
                 window.location.href = '/cart';
             } catch (e) {
                 LOG.error(e.message);

@@ -627,11 +627,12 @@
         #mc-modal-ia #mc-btn-generate { margin: 14px 0 18px !important; }
         #mc-modal-ia #mc-step-result .mc-btn-outline { border: 1px solid #111 !important; border-radius: 0 !important; font-family: 'Inter Tight', sans-serif !important; font-size: 11px !important; font-weight: 500 !important; letter-spacing: .16em !important; text-transform: uppercase !important; min-height: 46px !important; padding: 12px 10px !important; }
         #mc-modal-ia .ed-btns2 { display: flex; gap: 8px; }
-        #mc-modal-ia .ed-btns2 > button { flex: 1; }
-        #mc-modal-ia #mc-loading-box { padding: 0 !important; min-height: 0 !important; }
-        #mc-modal-ia .ed-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #111; height: 300px; width: 100%; }
+        #mc-modal-ia .ed-btns2 > button { flex: 1; display: flex; align-items: center !important; justify-content: center !important; text-align: center !important; line-height: 1.2 !important; }
+        #mc-modal-ia .ed-item .t s { color: #999; margin-left: 4px; }
+        #mc-modal-ia #mc-loading-box { padding: 0 !important; min-height: 0 !important; flex-shrink: 0 !important; }
+        #mc-modal-ia .ed-duo { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 100%; gap: 1px; background: #111; height: min(300px, 42vh); width: 100%; flex: none; overflow: hidden; }
         #mc-modal-ia .ed-duo.solo { grid-template-columns: 1fr; }
-        #mc-modal-ia .ed-duo img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.05); background: #f3f3f3; }
+        #mc-modal-ia .ed-duo img { display: block; min-height: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; filter: grayscale(1) contrast(1.05); background: #f3f3f3; }
         #mc-modal-ia .ed-load-tx { padding: 20px 24px 24px; text-align: left; width: 100%; box-sizing: border-box; }
         #mc-modal-ia .ed-load-tx b { display: block; font-size: 15px; font-weight: 500; text-transform: uppercase; letter-spacing: .04em; color: #111; }
         #mc-modal-ia .ed-load-tx small { display: block; font-size: 12px; color: #777; margin-top: 3px; }
@@ -645,7 +646,7 @@
         #mc-modal-ia .ed-item .t { flex: 1; min-width: 0; }
         #mc-modal-ia .ed-item b { display: block; font-size: 12.5px; font-weight: 500; color: #111; }
         #mc-modal-ia .ed-item small { font-size: 11.5px; color: #666; }
-        #mc-modal-ia .ed-item select { font: 400 12px 'Inter Tight', sans-serif; border: 1px solid #111; border-radius: 0; padding: 6px 8px; background: #fff; color: #111; }
+        #mc-modal-ia .ed-item select { width: 96px; flex: none; font: 400 12px 'Inter Tight', sans-serif; border: 1px solid #111; border-radius: 0; padding: 6px 8px; background: #fff; color: #111; }
         #mc-modal-ia .ed-total { display: flex; justify-content: space-between; font-size: 13px; padding: 10px 0 2px; color: #111; }
         #mc-modal-ia .ed-total b { font-weight: 600; }
         #mc-modal-ia .mc-powered-footer { background: #fff !important; border-top: 1px solid #eee !important; }
@@ -917,6 +918,9 @@
             if (/\b(calca|saia|short|shorts|bermuda|legging|ciclista|jogger|pantalona|flare|bike)\b/.test(n)) return 'baixo';
             return 'cima'; };
         const plImgUrl = (u, w) => { u = String(u || ''); if (u.indexOf('//') === 0) u = 'https:' + u; try { const x = new URL(u, location.href); x.searchParams.set('width', String(w || 300)); return x.href; } catch (_) { return u; } };
+        const plCorKey = (c) => { const n = String(c || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+            const m = { black: 'preto', preta: 'preto', white: 'branco', branca: 'branco', offwhite: 'off white', 'off-white': 'off white', nude: 'bege', beige: 'bege', grey: 'cinza', gray: 'cinza', blue: 'azul', green: 'verde', pink: 'rosa', red: 'vermelho', vermelha: 'vermelho', brown: 'marrom', lilac: 'lilas', purple: 'roxo', roxa: 'roxo' };
+            return m[n] || n; };
         const edTitulo = (s) => String(s || '').trim().toLowerCase().replace(/(^|[\s\-])(\S)/g, (m, a, b) => a + b.toUpperCase());
         async function plLookCarregar() {
             const atual = ((document.querySelector('h1.product-name, h1.product__title, .product-single__title, h1') || {}).innerText || '').trim();
@@ -965,14 +969,14 @@
             plLookPintar();
             // Foto da sugestão na mesma cor da peça da página (é a cor que a prova vai vestir)
             try {
-                const v1 = await selectedVariantData(); const cor = String((v1 && v1.color) || '').toLowerCase();
+                const v1 = await selectedVariantData(); const cor = plCorKey(v1 && v1.color);
                 if (!cor) return;
                 let mudou = false;
                 await Promise.all(plLookOps.map(async o => {
                     if (o._cor === cor) return;
                     const pj = await fetch('/products/' + o.handle + '.js').then(r => r.json());
                     const i = (pj.options || []).findIndex(x => /cor|color/i.test(x.name || x));
-                    const v = i >= 0 && (pj.variants || []).find(x => String(x['option' + (i + 1)] || '').toLowerCase() === cor && x.featured_image);
+                    const v = i >= 0 && (pj.variants || []).find(x => plCorKey(x['option' + (i + 1)]) === cor && x.featured_image);
                     if (v) { o.img = v.featured_image.src; o._cor = cor; mudou = true; }
                 }));
                 if (mudou) plLookPintar();
@@ -1023,14 +1027,29 @@
                 const p1 = await productJsonPromise;
                 const p2 = await fetch('/products/' + plLook.handle + '.js').then(r => r.json());
                 const v1 = await selectedVariantData();
-                const cor = String((v1 && v1.color) || '').toLowerCase();
+                const cor = plCorKey(v1 && v1.color);
                 const optIdx = (p, re) => (p.options || []).findIndex(o => re.test(o.name || o));
                 const tamDe = (p, v) => { const i = optIdx(p, /tam|size/i); return i >= 0 ? v['option' + (i + 1)] : v.title; };
                 const corDe = (p, v) => { const i = optIdx(p, /cor|color/i); return i >= 0 ? v['option' + (i + 1)] : ''; };
-                const daCor = (p) => { const i = optIdx(p, /cor|color/i); const vs = p.variants || []; if (i < 0 || !cor) return vs; const f = vs.filter(v => String(v['option' + (i + 1)] || '').toLowerCase() === cor); return f.length ? f : vs; };
-                const vs1 = daCor(p1), vs2 = daCor(p2);
-                const sel1 = (v1 && vs1.find(v => String(v.id) === String(v1.id))) || vs1.find(v => v.available) || vs1[0];
+                const daCor = (p, vidPref) => { const i = optIdx(p, /cor|color/i); const vs = p.variants || []; if (i < 0) return vs;
+                    const k = (v) => plCorKey(v['option' + (i + 1)]);
+                    let f = cor ? vs.filter(v => k(v) === cor) : [];
+                    if (!f.length) { const ref = vs.find(v => String(v.id) === String(vidPref)) || vs.find(v => v.available) || vs[0]; f = ref ? vs.filter(v => k(v) === k(ref)) : vs; }
+                    return f.length ? f : vs; };
+                const vs1 = daCor(p1), vs2 = daCor(p2, plLook.vid);
+                // A loja mostra o preço com desconto aplicado por um app (Black: -20%), não o da Shopify.
+                // Usa o mesmo fator da peça da página nas duas peças, para bater com o que a cliente vê.
+                const _pt = ((document.querySelector('product-price .price') || document.querySelector('product-price') || {}).innerText || '');
+                const _pm = _pt.match(/R\$\s*([\d.]+,\d{2})/);
+                const _pag = _pm ? Math.round(Number(_pm[1].replace(/\./g, '').replace(',', '.')) * 100) : 0;
+                const _v1 = v1 && vs1.find(v => String(v.id) === String(v1.id));
+                const sel1 = (_v1 && _v1.available ? _v1 : null) || vs1.find(v => v.available) || vs1[0];   // nunca começa num tamanho esgotado
                 const tam1 = sel1 ? tamDe(p1, sel1) : '';
+                const _b1 = sel1 ? Number(sel1.price) : 0;
+                const fator = (_pag && _b1 && _pag < _b1 && _pag / _b1 > 0.3) ? _pag / _b1 : 1;
+                const precoDe = (v) => v ? Math.round(Number(v.price) * fator) : 0;
+                const total = document.createElement('div'); total.className = 'ed-total';
+                const linhas = [];
                 const sel2 = vs2.find(v => v.available && tamDe(p2, v) === tam1) || vs2.find(v => v.available) || vs2[0];
                 const lbl = document.createElement('div'); lbl.className = 'ed-lbl'; lbl.textContent = 'Seu look'; box.appendChild(lbl);
                 const linha = (p, vs, sel, img) => {
@@ -1040,15 +1059,23 @@
                     const b = document.createElement('b'); b.textContent = edTitulo(p.title);
                     const s = document.createElement('small');
                     const ss = document.createElement('select');
-                    vs.forEach(v => { const o = document.createElement('option'); o.value = v.id; o.textContent = 'Tam. ' + tamDe(p, v) + (v.available ? '' : ' (esgotado)'); o.disabled = !v.available; if (sel && v.id === sel.id) o.selected = true; ss.appendChild(o); });
-                    const info = () => { const v = vs.find(x => String(x.id) === ss.value) || sel; s.textContent = edTitulo(corDe(p, v)); };
-                    ss.onchange = info;
+                    vs.forEach(v => { const o = document.createElement('option'); o.value = v.id; o.textContent = tamDe(p, v) + (v.available ? '' : ' · esgotado'); o.disabled = !v.available; if (sel && v.id === sel.id) o.selected = true; ss.appendChild(o); });
+                    const info = () => {
+                        const v = vs.find(x => String(x.id) === ss.value) || sel;
+                        s.textContent = [edTitulo(corDe(p, v)), v ? moneyBRL(precoDe(v)) : ''].filter(Boolean).join(' · ');
+                        if (v && fator < 1) { const o = document.createElement('s'); o.textContent = moneyBRL(v.price); s.appendChild(o); }
+                    };
+                    ss.onchange = () => { info(); somar(); };
+                    row._preco = () => precoDe(vs.find(x => String(x.id) === ss.value));
+                    linhas.push(row);
                     info();
                     t.appendChild(b); t.appendChild(s); row.appendChild(im); row.appendChild(t); row.appendChild(ss);
                     box.appendChild(row);
                     return row;
                 };
+                function somar() { total.textContent = ''; const a = document.createElement('span'); a.textContent = 'Total do look'; const z = document.createElement('b'); z.textContent = moneyBRL(linhas.reduce((x, r) => x + r._preco(), 0)); total.appendChild(a); total.appendChild(z); }
                 linha(p1, vs1, sel1, edImg1); linha(p2, vs2, sel2, plLook.img);
+                somar(); box.appendChild(total);
                 box.style.display = 'block';
                 if (pBox) pBox.style.display = 'none';
                 if (tro) tro.style.display = 'flex';
@@ -1263,7 +1290,15 @@
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     body: JSON.stringify({ items: edItens })
                 });
-                if (!response.ok) throw new Error('Falha ao adicionar ao carrinho: ' + response.status);
+                if (!response.ok) {
+                    let _msg = '';
+                    try { const _j = await response.json(); _msg = String(_j.description || _j.message || ''); } catch (_) {}
+                    LOG.warn('Carrinho recusou: ' + response.status + ' ' + _msg);
+                    buyResultBtn.disabled = false;
+                    buyResultBtn.textContent = /estoque|stock|esgot|sold out|available|dispon/i.test(_msg) || response.status === 422 ? 'Tamanho esgotado: escolha outro' : 'Não deu certo, tente de novo';
+                    setTimeout(() => { buyResultBtn.innerHTML = originalHtml; }, 3500);
+                    return;
+                }
                 window.location.href = '/cart';
             } catch (e) {
                 LOG.error(e.message);
@@ -1666,10 +1701,10 @@ const fd = new FormData();
                             const pj = await fetch('/products/' + plLook.handle + '.js').then(r => r.json());
                             // Mesma cor da peça 1 (cropped Black -> legging Black). Uma foto só: misturar cores confunde a IA.
                             let corAtual = '';
-                            try { const _sv = await selectedVariantData(); corAtual = String((_sv && _sv.color) || '').toLowerCase(); } catch (_) {}
+                            try { const _sv = await selectedVariantData(); corAtual = plCorKey(_sv && _sv.color); } catch (_) {}
                             const iCor = (pj.options || []).findIndex(o => /cor|color/i.test(o.name || o));
                             const vars = pj.variants || [];
-                            const v = (corAtual && iCor >= 0 && vars.find(x => String(x['option' + (iCor + 1)] || '').toLowerCase() === corAtual && x.featured_image))
+                            const v = (corAtual && iCor >= 0 && vars.find(x => plCorKey(x['option' + (iCor + 1)]) === corAtual && x.featured_image))
                                 || vars.find(x => String(x.id) === String(plLook.vid) && x.featured_image) || null;
                             const urls = [];
                             if (v && v.featured_image && v.featured_image.src) urls.push(v.featured_image.src);
